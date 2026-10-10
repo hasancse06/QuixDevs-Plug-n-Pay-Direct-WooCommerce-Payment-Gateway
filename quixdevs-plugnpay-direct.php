@@ -4,8 +4,8 @@
  * Description: Accept Plug'n Pay credit card payments in WooCommerce with direct checkout integration and a documented REST API.
  * Version: 1.0.0
  * Requires PHP: 8.2
- * Author: QuixDevs — Md Abu Hasan
- * Author URI: https://hasan.online/
+ * Author: QuixDevs
+ * Author URI: https://quixdevs.com/
  * Text Domain: quixdevs-plugnpay-direct
  * Domain Path: /languages/
  *

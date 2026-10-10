@@ -1,0 +1,11 @@
+QuixDevs supplied logo: byte-for-byte match; 164x45; colors/aspect ratio unchanged.
+SHA-256: 42e54d490262f2786cf10b98e9707eeb2ca687dfba2309f5fa48fb4832a02152
+github-social-preview.svg: exact supplied logo embedded; self-contained SVG.
+wordpress-banner.svg: exact supplied logo embedded; self-contained SVG.
+plugnpay-direct-mark.svg: exact supplied logo embedded; self-contained SVG.
+docs/branding/github-social-preview.png: 1280x640
+wordpress-org-assets/banner-772x250.png: 772x250
+wordpress-org-assets/banner-1544x500.png: 1544x500
+wordpress-org-assets/icon-128x128.png: 128x128
+wordpress-org-assets/icon-256x256.png: 256x256
+StockNotifier-style layout, payment illustration, wordmark, text fit and icons visually inspected.

@@ -1,0 +1,151 @@
+{
+  "info": {
+    "name": "QuixDevs Plug'n Pay Direct \u2014 BLOCKED / mock documentation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "No production transport. Pre-request guard always throws. Real credentials/card data must never be stored in this collection."
+  },
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{backend_user}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{backend_application_password}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "throw new Error('NETWORK DISABLED: local documentation only; public payment release blocked.');"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://store.example.invalid",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "42",
+      "type": "string"
+    },
+    {
+      "key": "payment_method",
+      "value": "plugnpaydirect",
+      "type": "string"
+    },
+    {
+      "key": "client_auth",
+      "value": "<CLIENT_KEY>",
+      "type": "string"
+    },
+    {
+      "key": "backend_user",
+      "value": "<DEDICATED_WORDPRESS_USER>",
+      "type": "string"
+    },
+    {
+      "key": "backend_application_password",
+      "value": "<SERVER_HELD_APPLICATION_PASSWORD>",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Payment contract \u2014 authenticated pending order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"payment_method\": \"{{payment_method}}\",\n  \"order_id\": \"{{order_id}}\",\n  \"plugnpaydirect-client-key\": \"{{client_auth}}\",\n  \"plugnpaydirect-card-number\": \"<PAN_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-expiry-month\": \"<MM>\",\n  \"plugnpaydirect-card-expiry-year\": \"<YYYY>\",\n  \"plugnpaydirect-card-cvc\": \"<CVV_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-name\": \"<CARDHOLDER_NAME>\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/wp-json/wc/v3/plugnpay-payment",
+        "description": "Documentation/mock contract only. Collection guard stops all sends. Requires authenticated WordPress order scope; production use blocked."
+      },
+      "response": []
+    },
+    {
+      "name": "Validation contract \u2014 missing method",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"order_id\": \"{{order_id}}\",\n  \"plugnpaydirect-client-key\": \"{{client_auth}}\",\n  \"plugnpaydirect-card-number\": \"<PAN_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-expiry-month\": \"<MM>\",\n  \"plugnpaydirect-card-expiry-year\": \"<YYYY>\",\n  \"plugnpaydirect-card-cvc\": \"<CVV_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-name\": \"<CARDHOLDER_NAME>\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/wp-json/wc/v3/plugnpay-payment",
+        "description": "Documentation/mock contract only. Collection guard stops all sends. Requires authenticated WordPress order scope; production use blocked."
+      },
+      "response": []
+    },
+    {
+      "name": "Paid-order contract \u2014 use an already-paid synthetic fixture",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"payment_method\": \"{{payment_method}}\",\n  \"order_id\": \"{{order_id}}\",\n  \"plugnpaydirect-client-key\": \"{{client_auth}}\",\n  \"plugnpaydirect-card-number\": \"<PAN_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-expiry-month\": \"<MM>\",\n  \"plugnpaydirect-card-expiry-year\": \"<YYYY>\",\n  \"plugnpaydirect-card-cvc\": \"<CVV_FROM_PROTECTED_INPUT>\",\n  \"plugnpaydirect-card-name\": \"<CARDHOLDER_NAME>\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/wp-json/wc/v3/plugnpay-payment",
+        "description": "Documentation/mock contract only. Collection guard stops all sends. Requires authenticated WordPress order scope; production use blocked."
+      },
+      "response": []
+    }
+  ]
+}

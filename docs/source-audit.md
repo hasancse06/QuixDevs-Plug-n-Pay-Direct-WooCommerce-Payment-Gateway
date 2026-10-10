@@ -1,0 +1,11 @@
+# Source audit and report discrepancies
+
+The requested `quixdevs-plugnpay-direct/docs/implementation-report.md` does not exist. The actual earlier report and developer documentation are in the parent workspace's `docs/`; the plugin directory contains a short runtime README/readme/notices and PHP source. The target directory existed and was empty. This was resolved by inspecting the actual source plus the workspace-level documents, not by modifying their location.
+
+The earlier report's 22 tests/124 assertions, 3,794 PHPCS errors/326 warnings and namespace rebrand describe the previous private copy. Those numbers are historical and are not presented as new distribution results. The source still contained the documented key-only route without a permission callback, embedded checkout verification value, legacy status 123/raw output, refund result arrays and optional-plugin issues. A .DS_Store file was also present in the QuixDevs source; it is hashed for preservation but excluded from copying.
+
+The controlled runtime allowlist copies the PHP implementation, languages index, reserved-assets description, readme and required historical notices. It excludes all seven upstream PNGs because their redistribution terms are absent, original source/backups/snapshots, caches, private/environment files, old verification outputs and unrelated projects. The embedded key was removed in memory before the target main file was written. No private secret is stored in a diff/test fixture/report.
+
+[Source-hash manifest](source-hashes.json) records both source directories. [Copy allowlist](copy-allowlist.json) records selected paths/exclusions. Local read-only verification confirms inventories/hashes; CI has no access to private siblings and does not pretend to check their preservation. [Runtime diff](verification/runtime-changes.diff) sanitizes the removed source literal; [functional comparison](functional-parity.md) separates intended changes from retained behavior.
+
+No actual license grant or redistribution/asset terms were supplied. No WordPress runtime was available for this plugin, and reports do not invent a real-provider, Plugin Check or install result. [Current testing](testing.md), [release readiness](github-release-readiness.md).

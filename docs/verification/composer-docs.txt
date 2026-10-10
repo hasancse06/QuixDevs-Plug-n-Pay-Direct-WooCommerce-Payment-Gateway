@@ -1,0 +1,3 @@
+Offline documentation checks: 37 Markdown documents; 155 local links; 5 PNG dimensions; runtime identity, Postman guard/fields and CI command wiring checked.
+External URLs and hosted GitHub rendering/CI are not verified by this offline check.
+> python3 tools/verify-docs.py

@@ -1,0 +1,12 @@
+{
+  "status": "PREPARED LOCALLY — PUBLICATION BLOCKED",
+  "release_requirements": {
+    "upstream_redistribution_license_confirmed": false,
+    "payment_concurrency_and_replay_review_passed": false,
+    "refund_contract_review_passed": false,
+    "rest_input_output_transport_review_passed": false,
+    "wordpress_woocommerce_integration_verified": false,
+    "plugin_check_review_complete": false,
+    "installation_verified": false
+  }
+}

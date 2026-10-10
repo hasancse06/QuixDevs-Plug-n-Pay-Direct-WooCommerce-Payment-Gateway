@@ -1,0 +1,1 @@
+Missing WooCommerce: safe initialization return.

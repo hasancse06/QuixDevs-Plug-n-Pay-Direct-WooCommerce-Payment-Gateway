@@ -1,0 +1,36 @@
+name: Local contracts and distribution policy
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, dom
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - run: composer lint
+      - run: composer test
+      - run: php tests/missing-dependency.php
+      - run: php tests/missing-key.php
+      - run: composer secrets
+      - run: composer docs
+      - run: composer package-check
+      - name: Record inherited WordPress coding-standard findings
+        continue-on-error: true
+        run: composer phpcs > phpcs.json 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wordpress-standards-php-${{ matrix.php }}
+          path: phpcs.json
+# Plugin Check needs an actual disposable WP/WC installation plus Plugin Check;
+# run tools/plugin-check.sh there. No decorative unprovisioned job is enabled.
+# No release/deploy job, merchant credentials, live API calls or public packaging.

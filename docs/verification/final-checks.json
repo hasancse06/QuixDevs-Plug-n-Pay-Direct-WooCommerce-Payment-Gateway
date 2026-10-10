@@ -1,0 +1,29 @@
+{
+  "composer-lint": {
+    "exit": 0,
+    "expected": 0
+  },
+  "composer-test": {
+    "exit": 0,
+    "expected": 0
+  },
+  "composer-docs": {
+    "exit": 0,
+    "expected": 0
+  },
+  "composer-secrets": {
+    "exit": 0,
+    "expected": 0
+  },
+  "composer-package-check": {
+    "exit": 0,
+    "expected": 0
+  },
+  "composer-release-check": {
+    "exit": 1,
+    "expected": 1
+  },
+  "no-zip": {
+    "verified": true
+  }
+}

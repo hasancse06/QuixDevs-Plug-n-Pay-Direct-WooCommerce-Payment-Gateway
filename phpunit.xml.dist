@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<phpunit bootstrap="tests/bootstrap.php" colors="true" failOnWarning="true">
+  <testsuites><testsuite name="Distribution contracts and targeted safeguards"><file>tests/ContractTest.php</file></testsuite></testsuites>
+</phpunit>

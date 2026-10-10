@@ -1,0 +1,27 @@
+{
+  "runtime_copied": [
+    "quixdevs-plugnpay-direct.php",
+    "readme.txt",
+    "UPSTREAM-NOTICES.md",
+    "assets/README.txt",
+    "languages/index.php",
+    "includes/abstracts/abstract-wc-plugnpay-payment-gateway.php",
+    "includes/class-wc-plugnpay-customer-cards.php",
+    "includes/class-wc-plugnpay-customer.php",
+    "includes/class-wc-plugnpay-exception.php",
+    "includes/class-wc-plugnpay-helper.php",
+    "includes/class-wc-plugnpay-logger.php",
+    "includes/compat/class-wc-plugnpay-pre-orders-compat.php",
+    "includes/compat/class-wc-plugnpay-subs-compat.php"
+  ],
+  "excluded": [
+    "all seven original PNG assets (rights unconfirmed)",
+    "original production source and snapshots",
+    "private/",
+    "vendor/",
+    "source credentials (removed before writing main file)",
+    "prior verification outputs and cache",
+    ".DS_Store",
+    "local configuration"
+  ]
+}

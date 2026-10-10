@@ -4,7 +4,7 @@ from pathlib import Path
 import argparse,io,json,subprocess,sys,zipfile
 root=Path(__file__).resolve().parents[1];slug='quixdevs-plugnpay-direct'
 parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true',help='Validate an in-memory archive only; writes no ZIP.');args=parser.parse_args()
-paths=[root/'quixdevs-plugnpay-direct.php',root/'readme.txt',root/'UPSTREAM-NOTICES.md']
+paths=[root/'quixdevs-plugnpay-direct.php',root/'readme.txt',root/'UPSTREAM-NOTICES.md',root/'CHANGELOG.md']
 for directory in ['includes','assets','languages']:
  paths.extend(p for p in (root/directory).rglob('*') if p.is_file() and p.suffix in {'.php','.png','.svg','.txt','.pot','.mo','.po'})
 if (root/'LICENSE').is_file():paths.append(root/'LICENSE')
@@ -14,7 +14,10 @@ scan=subprocess.run([sys.executable,str(root/'tools/secret-scan.py')],capture_ou
 if scan.returncode:print(scan.stdout);raise SystemExit('Secret policy failed; no package produced.')
 buffer=io.BytesIO()
 with zipfile.ZipFile(buffer,'w',zipfile.ZIP_DEFLATED) as archive:
- for path in sorted(set(paths)):archive.writestr(slug+'/'+str(path.relative_to(root)),path.read_bytes())
+ for path in sorted(set(paths)):
+  entry=zipfile.ZipInfo(slug+'/'+path.relative_to(root).as_posix(),(2026,10,10,0,0,0))
+  entry.compress_type=zipfile.ZIP_DEFLATED;entry.external_attr=0o100644 << 16
+  archive.writestr(entry,path.read_bytes())
 with zipfile.ZipFile(buffer) as archive:
  names=archive.namelist()
  assert all(n.startswith(slug+'/') and '..' not in Path(n).parts and '-github/' not in n for n in names)

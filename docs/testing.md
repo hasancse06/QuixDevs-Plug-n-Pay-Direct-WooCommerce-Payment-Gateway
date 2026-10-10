@@ -46,8 +46,10 @@ Actual WordPress/WooCommerce authentication and REST serialization, gateway acti
 
 [Plugin Check helper](../tools/plugin-check.sh) requires an explicitly disposable site, WooCommerce, Plugin Check and WP-CLI. It is not a substitute for provisioning/testing them. The README/API render preview is local Markdown rendered with Marked and a temporary headless Chrome profile, not a hosted GitHub run or WordPress screenshot.
 
-## Evidence
+## Evidence and repository hygiene
 
-[PHPUnit](verification/phpunit.txt), [syntax](verification/lint.txt), [missing dependency](verification/missing-dependency.txt), [missing key](verification/missing-key.txt), [source preservation](verification/source-preservation.txt), [PHPCS summary](verification/phpcs-summary.txt), [full PHPCS JSON](verification/phpcs.json), [final scan](verification/secret-scan.txt), [documentation checks](verification/docs.txt), [layout checks](verification/package-layout.txt), [release refusal](verification/publication-gate.txt), [build refusal](verification/build-gate.txt), [development dependency licenses](verification/development-licenses.json).
+The table above is the committed verification summary. Raw tool output, absolute local paths, review diffs, preview captures and dependency-license inventories remain under ignored `docs/verification/`. The private source-hash inventory is ignored as `docs/source-hashes.json`. They are local maintainer evidence, not required files for a clone or hosted CI. Re-run the documented commands to generate current results.
+
+`composer repository-check` verifies tracked file exclusions and required source/docs/artwork. `python3 tools/check-repository.py --snapshot-check` creates a temporary copy of upload candidates without ignored files and runs docs/secret/package-layout checks there. This confirms the repository does not depend on local reports or vendor/cache directories. Historical commits are audited separately; untracking a report does not remove it from existing history.
 
 The previous private report's 22 tests/124 assertions and older standards counts are historical, not these results. No standards rules were globally disabled to obtain a green result.

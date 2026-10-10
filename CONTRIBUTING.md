@@ -1,6 +1,6 @@
 # Contributing
 
-Keep this repository private until rights and critical payment release conditions are resolved. Do not initialize/push a remote or publish a package solely because local tests pass.
+Keep this repository private until rights and critical payment release conditions are resolved. Use the existing checkout for review; publication requires the recorded legal and technical conditions, not just passing mocked tests.
 
 ```sh
 composer install
@@ -11,6 +11,7 @@ php tests/missing-key.php
 composer secrets
 composer docs
 composer package-check
+composer repository-check
 composer phpcs
 composer release-check
 ```

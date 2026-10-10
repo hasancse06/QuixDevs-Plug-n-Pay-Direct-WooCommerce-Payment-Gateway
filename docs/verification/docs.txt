@@ -1,2 +1,0 @@
-Offline documentation checks: 37 Markdown documents; 164 local links; 6 PNG dimensions; runtime identity, Postman guard/fields and CI command wiring checked.
-External URLs and hosted GitHub rendering/CI are not verified by this offline check.

@@ -1,6 +1,0 @@
-Local Marked 17.0.5 + temporary headless system Chrome, viewport 1440x1100.
-README: expected h1; zero broken images; no viewport horizontal overflow.
-REST docs: expected h1; zero broken images; no viewport horizontal overflow.
-README/API capture and social preview/banner/icon visually inspected.
-Captures are documentation renderings, not hosted GitHub or WordPress admin screenshots.
-No external network requests were permitted by the renderer.

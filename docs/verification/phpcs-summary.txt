@@ -1,5 +1,0 @@
-PHP_CodeSniffer 3.13.6; WordPress Coding Standards 3.4.1; full WordPress rules with known capability names.
-Production PHP files scanned: 11
-Errors: 3858; warnings: 328; fixable: 3740
-No global exclusions/suppressions were used.
-New authorization include findings: 0 errors, 0 warnings.

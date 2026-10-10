@@ -1,150 +1,177 @@
 # QuixDevs Plug'n Pay Direct
 
-![QuixDevs Plug'n Pay Direct — supplied QuixDevs logo and StockNotifier-style payment preview](docs/branding/github-social-preview.png)
+![QuixDevs Plug'n Pay Direct with the supplied QuixDevs logo, payment illustration and creator credit](docs/branding/github-social-preview.png)
 
-**WooCommerce Payment Gateway with REST API Support**  
+**WooCommerce Payment Gateway with REST API Support**
+
 Accept Payments. Integrate Easily. Manage Securely.
 
-Accept Plug'n Pay credit card payments in WooCommerce with direct checkout integration and a documented REST API. This distribution candidate keeps the existing gateway ID, merchant settings, financial request mapping, order references and refund implementation.
+A **Plug'n Pay payment gateway for WooCommerce**, with classic credit-card checkout, merchant configuration, transaction references and a documented REST payment workflow. This GitHub workspace packages the existing QuixDevs implementation with clear store instructions, developer documentation, original payment artwork and reproducible development checks.
 
-- Classic WooCommerce credit-card checkout.
-- Existing `POST /wp-json/wc/v3/plugnpay-payment` integration.
-- Merchant configuration and provider transaction references.
-- Refund and saved-payment source retained, with limitations documented.
+- Accept card payments through the classic WooCommerce checkout.
+- Keep merchant configuration in WooCommerce payment settings.
+- Integrate the existing REST payment operation through an authenticated server boundary.
+- Retain refund and saved-payment features with their verification limits documented.
 
-**Version 1.0.0 target — PREPARED LOCALLY, PUBLIC RELEASE BLOCKED.** License confirmation and critical payment-correctness/security work remain outstanding. REST processing exists for isolated tests but is **unavailable for production deployment** in this candidate. The tagline is a product aim, not a security certification. [Release readiness](docs/github-release-readiness.md).
+**Release status: private review candidate, target v1.0.0.** Public distribution remains blocked by unconfirmed upstream redistribution rights and unresolved payment-correctness/security requirements. The tests below use mocked processor responses. [Release status and remaining work](docs/github-release-readiness.md).
 
-[Installation](#installation) · [Merchant setup](#plugn-pay-merchant-configuration) · [REST reference](docs/rest-api.md) · [Testing](docs/testing.md) · [Release conditions](docs/release-checklist.md)
-
-## Overview
-
-A controlled GitHub distribution copy of the existing QuixDevs gateway. The repository lives in `quixdevs-plugnpay-direct-github`; a future approved ZIP must install as **`quixdevs-plugnpay-direct/`**, without the GitHub-folder suffix. Both existing source directories are untouched. No live payment, credential rotation, database change or deployment was performed.
+[Installation](#installation) · [Merchant setup](#merchant-configuration) · [REST API](docs/rest-api.md) · [Developer docs](#developer-documentation) · [Contributing](CONTRIBUTING.md)
 
 ## Why QuixDevs Plug'n Pay Direct?
 
-The project brings clear merchant instructions, an actual-contract API reference, testable developer tooling and consistent QuixDevs presentation to the supplied production-used implementation. It does not replace the processor integration or invent a new settlement flow.
+The gateway connects WooCommerce orders to the supplied Plug'n Pay remote-payment integration. This distribution keeps the existing gateway ID, settings, payment amounts, processor fields and transaction references while providing a consistent QuixDevs repository presentation and explicit integration guidance.
 
-## Key Features
+Direct-card processing passes sensitive payment data through the store server. Merchants and integrators need to review the documented configuration and release conditions before deployment. The product tagline expresses its aim; no payment-security certification is claimed.
 
-| Area | Implemented behavior and evidence |
+## Key features
+
+| Feature | Implemented behavior |
 |---|---|
-| Classic Checkout | Existing card form and provider request mapping; synthetic local tests |
-| REST integration | Existing URL and payment fields; new HTTPS, identity and order-scope checks |
-| Merchant setup | Same gateway/settings identifiers; checkout verification key moved to server configuration |
-| Order confirmation | Provider `orderID` recorded through WooCommerce payment completion |
-| Refunds | Existing `mode=return` flow retained; result-contract/pending/duplicate defects remain |
-| Saved methods | Existing `authprev` flow retained; invalid/foreign tokens now stop before submission |
+| Classic checkout | Existing cardholder, card number, expiry and CVC fields |
+| Merchant settings | Existing publisher, password, shared-key and card-selection settings |
+| Order completion | Provider `orderID` recorded through WooCommerce payment completion |
+| REST operation | `POST /wp-json/wc/v3/plugnpay-payment`, retaining existing body field names |
+| Caller permissions | HTTPS, WordPress identity, shared-key validation and per-order authorization |
+| Checkout verification | Server-configured verification key with no embedded default |
+| Refund source | Existing full/partial `mode=return` flow retained |
+| Saved methods | Existing previous-transaction reuse, with invalid/foreign-token rejection |
 
-No processor, WordPress runtime, secure-vault, HPOS, optional-extension or PCI certification is implied by mocked tests. [Functional comparison](docs/functional-parity.md).
+Refund results, concurrent attempts and authorized REST responses still have inherited defects. [Implementation comparison](docs/functional-parity.md) · [Security review](docs/security.md).
 
 ## Screenshots
 
-The header image uses the supplied QuixDevs logo and original payment artwork in the StockNotifier presentation style. The image below is a genuine local rendering of the API documentation. Four WordPress admin/checkout captures remain unavailable because no disposable WordPress environment was provisioned. [Exact capture instructions](docs/screenshots/README.md) describe the remaining views.
+The preview above uses the supplied QuixDevs logo and original payment artwork, following the ProductClock/StockNotifier presentation family.
 
-![Local API documentation preview — release status and actual authentication requirements](docs/screenshots/05-api-documentation.png)
+![Local API documentation showing the route, release status and caller authorization requirements](docs/screenshots/05-api-documentation.png)
 
-## Requirements
-
-PHP 8.2+ is the intended distribution baseline; local execution is PHP 8.4.13. WooCommerce must provide `WC_Payment_Gateway_CC`; no actual WordPress/WooCommerce version is currently certified by this project. Direct-card processing requires HTTPS and an appropriately configured Plug'n Pay merchant account. The retained financial flow sends KYD. [Compatibility and limitations](docs/compatibility.md).
+*Genuine local documentation rendering. WordPress settings and checkout captures require a disposable test store; [capture instructions](docs/screenshots/README.md) describe the four remaining views.*
 
 ## Installation
 
-**No public release ZIP exists yet.** Keep this repository local/private while blockers remain. Development requires Composer only for tests/standards; customer runtime uses no Composer autoloader.
+**WooCommerce must provide `WC_Payment_Gateway_CC`. Customer runtime does not require Composer.** This candidate is for isolated review while the release conditions remain unresolved.
 
-For isolated review, copy the allowlisted runtime files into a disposable installation under `wp-content/plugins/quixdevs-plugnpay-direct/`, intercept processor HTTP requests, and activate only one copy of this gateway. Both copies share `plugnpaydirect`; do not activate them together. No source settings or historical tokens are migrated/deleted.
+The repository workspace is `quixdevs-plugnpay-direct-github`; the canonical WordPress installation folder is **`quixdevs-plugnpay-direct/`**. Activate only one gateway copy because the original and branded copies share ID `plugnpaydirect`.
 
-After release approval and ZIP installation verification, the public instructions will be:
+For development, use a disposable WordPress/WooCommerce site and intercept all processor HTTP requests with synthetic fixtures. Copy only the runtime allowlist into `wp-content/plugins/quixdevs-plugnpay-direct/`. [Testing and package checks](docs/testing.md).
 
-1. Open the approved repository's Releases page and download the attached `quixdevs-plugnpay-direct.zip`, not GitHub's generic source archive.
-2. In WordPress, choose Plugins → Add Plugin → Upload Plugin, select that ZIP, install and activate.
-3. Configure HTTPS, the server-side verification key and existing WooCommerce payment settings.
+Once an approved public release is published:
 
-No unpublished download URL is invented. Maintainers can validate package paths now with `composer package-check`; this constructs an **in-memory layout only** and writes no ZIP. `python3 tools/build-release.py` currently refuses to produce a release archive. [Publishing checklist](docs/github-publishing-checklist.md).
+1. Open the repository's **Releases** section and download the attached **`quixdevs-plugnpay-direct.zip`**.
+2. In WordPress, open **Plugins → Add Plugin → Upload Plugin**, install that ZIP and activate the gateway.
+3. Configure HTTPS, the server verification key and WooCommerce merchant settings.
 
-## Plug'n Pay Merchant Configuration
+There is currently no approved public ZIP or download URL. Maintainers can run `composer package-check` to validate the canonical archive layout in memory. The release builder refuses to write a ZIP while requirements remain unresolved. [Publishing checklist](docs/github-publishing-checklist.md).
 
-Gateway ID and setting IDs are unchanged: `enabled`, `title`, `description`, `publisher_name`, `publisher_email`, `client_key`, `client_password`, `cardtypes`, `saved_cards`.
+## Merchant configuration
 
-The embedded checkout verification secret was removed **before writing the distribution copy**. Configure `QUIXDEVS_PLUGNPAY_VERIFICATION_KEY` on the server with no default. Missing/empty configuration or non-HTTPS checkout stops before submission. The existing MD5 input ordering and provider parameters remain unchanged. The historical key must be treated as compromised for future distribution; authorized merchant rotation/configuration is not performed automatically. [Merchant setup](docs/merchant-configuration.md).
+Open **WooCommerce → Settings → Payments → QuixDevs Plug'n Pay Direct**. Existing stores retain the same option `woocommerce_plugnpaydirect_settings` and field identifiers.
 
-## WooCommerce Checkout Integration
+| Setting | Purpose |
+|---|---|
+| Enable, title and description | Checkout availability and display text |
+| Publisher name / email | Plug'n Pay merchant identification |
+| Remote password | Merchant processor credential |
+| Client key | Additional credential for the existing REST operation |
+| Card types / saved cards | Existing checkout and saved-method settings |
 
-Classic Checkout submits the existing name, PAN, separate expiry month/year and CVC fields. Successful provider confirmation records transaction `orderID`, adds existing notes and calls `payment_complete`. The main implementation, currency, amount calculation, parser and settlement semantics are preserved. Inherited validation and output issues are documented. Checkout Blocks is not implemented.
+Checkout requires `QUIXDEVS_PLUGNPAY_VERIFICATION_KEY` from administrator-controlled server configuration before plugins load. No default is included; absent/empty configuration or non-HTTPS checkout stops before submission. The inherited hash formula is retained and requires merchant-specific confirmation.
 
-## REST API Integration
+Keep merchant passwords, shared keys and WordPress Application Passwords on trusted servers. [Exact configuration](docs/merchant-configuration.md) · [Financial request mapping](docs/payment-flow.md).
 
-The only operation is `POST /wp-json/wc/v3/plugnpay-payment`. Existing request names remain. No QuixDevs v1 route, API refund, status lookup or idempotency field is added. The endpoint is retained for integration testing but production deployment remains blocked. [Complete API reference](docs/rest-api.md).
+## REST API integration
 
-## API Authentication
+The existing operation is **`POST /wp-json/wc/v3/plugnpay-payment`**. JSON or form request parameters reach the controller. The actual reference covers all eight request fields, order state, provider flow, transaction references and response behavior. [Complete REST reference](docs/rest-api.md).
 
-The old embedded-key-only client can no longer execute payments in this copy. A valid WordPress identity and HTTPS are required **in addition to** the existing shared key. Customers are restricted to their own registered-customer orders. A trusted backend paying other/guest orders needs both the explicitly granted `quixdevs_plugnpay_pay_orders` capability and WooCommerce permission to edit the requested order. No capability is granted automatically, including to administrators.
+This copy requires HTTPS, an authenticated WordPress identity, the existing shared client key and order authorization. Customers are limited to their own registered-customer orders. A trusted backend paying guest/other orders requires both explicitly granted `quixdevs_plugnpay_pay_orders` and WooCommerce permission to edit the requested order. The plugin grants no capabilities automatically.
 
-A mobile integration must move secrets to its trusted backend and implement customer/order authorization there. This authentication change is intentional and documented; it does not solve the retained duplicate-charge and response defects. [Exact migration requirements](docs/api-authentication.md).
+**The former embedded-key-only app is denied in this copy.** A separately implemented trusted backend must authenticate its customer, authorize the order and keep credentials server-side. [Authentication and migration](docs/api-authentication.md).
 
-## API Request & Response
+| Integration guide | What is supplied |
+|---|---|
+| [cURL](docs/api-examples/curl.md) | Non-sending request/header specimen |
+| [PHP](docs/api-examples/php.md) | Trusted-server payload specimen with placeholders |
+| [JavaScript](docs/api-examples/javascript.md) | Server-side/mock contract object |
+| [Ionic Angular](docs/api-examples/ionic-angular.md) | UI intent/state without embedded secrets or raw-card submission |
+| [Postman](docs/postman/README.md) | Collection with an always-on network guard |
 
-Authorization failures now use `WP_Error` with 400/401/403 status data. Once authorized, the original handler retains HTTP status **123**, body code 200/401/405 and numeric provider fragments. Timeout handling can still throw. These are explicit release blockers, not a standardized public API. [Fields, synthetic responses and retry rules](docs/rest-api.md).
+Permission failures use `WP_Error` with 400/401/403 status data. Authorized legacy processing still asks for HTTP **123**, exposes numeric provider fragments and can throw on transport errors. REST production deployment remains unavailable pending the documented corrections. Never automatically retry an uncertain charge.
 
-## cURL Integration
+## Refunds and saved payments
 
-[Guarded cURL contract specimen](docs/api-examples/curl.md) documents the actual URL, headers and all payment fields without submitting a raw-card request. Do not enable a production transport while this candidate remains blocked.
+The inherited refund implementation sends `mode=return`, the transaction reference, amount and KYD. Mock tests characterize full/partial requests. Truthy failure arrays, pending-as-success and repeated-return behavior remain release blockers. [Refund details](docs/refunds.md).
 
-## PHP Integration
+Saved methods use a previous transaction associated with the user. Missing, foreign or wrong-gateway tokens and missing references are rejected before submission. This source model is not verified independent provider-vault tokenization. No tested token-save path persists full PAN or CVV. [Security and implementation limits](docs/security.md).
 
-[PHP specimen](docs/api-examples/php.md) describes a trusted-server boundary and synthetic payload assembly. No real merchant credentials, automatic retry or card logging is supplied.
+## Requirements and verification
 
-## Ionic Angular Integration
+| Component | Baseline / recorded evidence |
+|---|---|
+| PHP | Intended minimum 8.2; locally executed 8.4.13 |
+| WordPress / WooCommerce | WooCommerce gateway class required; no actual installed-version certification |
+| Merchant account / transport | Appropriate Plug'n Pay account and HTTPS; no live processor requests made |
+| Currency | Main payments/refunds retain literal KYD |
+| Local automated checks | 25 mocked tests, 127 assertions; PHP syntax passed |
+| Coding standards | Full WPCS checking remains nonzero; see current counts and review limits |
 
-[Ionic Angular example](docs/api-examples/ionic-angular.md) keeps merchant credentials/shared keys out of app code and prepares UI state only. A separately implemented backend is required; no fictional backend URL is advertised. [Server-side JavaScript specimen](docs/api-examples/javascript.md), [guarded Postman collection](docs/postman/README.md).
+Actual WordPress/WooCommerce authentication/serialization, HPOS, Plugin Check, ZIP activation and processor integration are unverified. GitHub Actions is configured; no hosted CI success badge is claimed. [Testing guide](docs/testing.md) · [Compatibility matrix](docs/compatibility.md).
 
-## Refunds
+## Compatibility and limitations
 
-Existing full/partial `mode=return` requests are preserved. Pending is currently treated as success and associative failure arrays remain truthy to WooCommerce callers. Repeated calls are not protected internally. These behaviors are characterized, not endorsed as a correct public release. [Refund details](docs/refunds.md).
+- **Checkout:** classic Checkout; Blocks integration is not implemented.
+- **Concurrent payments:** sequential paid-order repeats are rejected, but overlapping attempts can submit twice. A shared payment/refund attempt boundary remains required.
+- **Payment input/output:** encoding, strict card validation, response parsing and sensitive output/logging need further review.
+- **Optional extensions:** Subscriptions and Pre-Orders source is retained; real integration is unverified.
+- **Assets:** unlicensed upstream card-network PNGs are excluded. QuixDevs artwork stays outside the runtime ZIP.
 
-## Payment Security
+[Security findings](docs/security.md) · [Troubleshooting](docs/troubleshooting.md) · [Release conditions](docs/release-checklist.md).
 
-Full card data passes through the store server. No PCI certification is claimed. Do not log PAN, CVV, passwords, auth headers or complete payment bodies. New REST authorization and saved-token guards are tested locally; locking/replay protection, strict card validation, output/log redaction and refund correctness remain unresolved. [Security review](docs/security.md), [SECURITY.md](SECURITY.md).
+## Frequently asked questions
 
-## Compatibility and Limitations
+**Does this change the original production plugin?**
+Both sibling source directories remain untouched. This folder is the separate distribution workspace; its scoped authentication/configuration changes are documented.
 
-The supplied implementation has maintainer-reported production history. That is distinct from this copy's mocked verification. Real WordPress/WooCommerce installation, HTTP serialization, HPOS, Blocks and optional extensions are not verified. Original card-logo assets were excluded because redistribution terms were unavailable; missing optional icon files are skipped by the existing renderer. [Compatibility matrix](docs/compatibility.md).
+**Can I use the old mobile application's embedded key?**
+Key possession alone is insufficient in this copy. Follow the trusted-backend migration and WordPress order-permission requirements.
 
-## Troubleshooting
+**How should I handle a timeout?**
+Reconcile the provider transaction and WooCommerce order before another attempt. A timeout does not establish that no charge occurred.
 
-See [troubleshooting](docs/troubleshooting.md) for missing server-key configuration, denied order scope, backend capabilities, pending-only REST orders, HTTP 123, timeout reconciliation and refund issues. Do not reset a paid order simply to force another attempt.
+**Is this ready for a public release?**
+Repository presentation and upload hygiene are prepared. Redistribution rights, critical correctness/security conditions and real platform checks still need evidence. [Readiness](docs/github-release-readiness.md).
 
-## Developer Documentation
+## Developer documentation
 
-- [Source audit](docs/source-audit.md), [architecture](docs/architecture.md), [financial request mapping](docs/payment-flow.md)
-- [REST reference](docs/rest-api.md), [authentication](docs/api-authentication.md), [safe examples](docs/api-examples/php.md)
-- [Testing](docs/testing.md), [parity comparison](docs/functional-parity.md), [implementation report](docs/implementation-report.md)
-- [GitHub listing](docs/github-listing.md), [release notes](docs/github-release-notes.md), [readiness report](docs/github-release-readiness.md)
+- [Architecture](docs/architecture.md), [payment flow](docs/payment-flow.md), [merchant setup](docs/merchant-configuration.md) and [refunds](docs/refunds.md)
+- [REST API](docs/rest-api.md), [authentication](docs/api-authentication.md), [examples](docs/api-examples/php.md) and [Postman](docs/postman/README.md)
+- [Testing](docs/testing.md), [functional comparison](docs/functional-parity.md), [source audit](docs/source-audit.md) and [changelog](CHANGELOG.md)
+- [GitHub listing](docs/github-listing.md), [release notes](docs/github-release-notes.md), [publishing checklist](docs/github-publishing-checklist.md) and [upload guide](docs/github-upload.md)
+- [Branding sources](docs/branding/README.md), [WordPress.org assets](wordpress-org-assets/README.md) and [release-readiness report](docs/github-release-readiness.md)
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Work only on synthetic fixtures and mocked HTTP. Keep financial changes separately reviewed, and never copy private merchant configuration into the repository. No Git repository or remote has been initialized automatically.
+Follow [CONTRIBUTING.md](CONTRIBUTING.md), use synthetic data and mocked processor responses, and keep financial changes focused and separately reviewed. Report suspected vulnerabilities through the private channel described in [SECURITY.md](SECURITY.md). Include versions and reproducible steps without payment/customer credentials.
 
-## Upstream Attribution
+## Upstream attribution and license
 
-Derived from the supplied Plug'n Pay Direct Gateway for WooCommerce 1.3.2, attributed to PatSaTECH. QuixDevs is the intended current publisher, not the original author of all source. Historical notices remain in [UPSTREAM-NOTICES.md](UPSTREAM-NOTICES.md). [License review](docs/licensing-review.md).
+Derived from the supplied Plug'n Pay Direct Gateway for WooCommerce 1.3.2, attributed to **PatSaTECH**. Current QuixDevs presentation and maintenance do not establish exclusive ownership of inherited source. [Upstream notices](UPSTREAM-NOTICES.md).
 
-## Developer & Maintainer
+No authoritative upstream modified-source redistribution grant was supplied. Public distribution remains **blocked pending license confirmation**. No GPL grant is invented. [License review](docs/licensing-review.md).
 
-**Md Abu Hasan (M A Hasan)**
+## 👨‍💻 Developer & Creator
 
-Full-Stack Software Engineer with 10+ years of experience in WordPress, WooCommerce, PHP, Laravel, Ionic Angular and REST API development.
+**[Md Abu Hasan (M A Hasan)](https://hasan.online/)**
 
-- Portfolio: https://hasan.online/
-- Udemy: https://www.udemy.com/user/m-a-hasan-2/
-- Envato: https://themeforest.net/user/hasanonline
-- Technical Blog: https://blog.hasan.online
+Full-Stack Software Engineer with **10+ years of experience** building web applications, SaaS platforms, WordPress and WooCommerce plugins, and hybrid mobile applications.
 
-## Published & Maintained by
+**Technical Expertise:** PHP, Laravel, WordPress, WooCommerce, Ionic Angular, TypeScript, REST APIs, and AI integrations.
+
+- 🌐 **Portfolio & About Me:** [hasan.online](https://hasan.online/)
+- 🎓 **Udemy Instructor:** [View Profile](https://www.udemy.com/user/m-a-hasan-2/)
+- 🛠️ **Envato Author:** [View Portfolio](https://themeforest.net/user/hasanonline)
+- ✍️ **Technical Blog:** [blog.hasan.online](https://blog.hasan.online)
+
+## 🏢 Published & Maintained by
 
 **QuixDevs**
 
-QuixDevs Plug'n Pay Direct is maintained under the QuixDevs brand. This candidate has not been publicly published.
-
-## License
-
-No applicable upstream redistribution grant was supplied. Public distribution is **BLOCKED pending license confirmation**. No GPL grant, exclusive ownership or asset redistribution rights are invented. Composer's license field is intentionally omitted; WordPress readme licensing metadata remains a draft.
+QuixDevs Plug'n Pay Direct is maintained under the **QuixDevs** brand. It is an independent plugin; no official endorsement by Plug'n Pay or WooCommerce is claimed. Publication is pending the documented release conditions.

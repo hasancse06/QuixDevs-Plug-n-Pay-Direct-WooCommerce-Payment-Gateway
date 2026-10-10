@@ -39,9 +39,10 @@ for i,item in enumerate(collection['item']):
  if keys!=(expected-{'payment_method'} if i==1 else expected):errors.append('Unexpected Postman body fields')
 composer=json.loads((root/'composer.json').read_text())
 workflow=(root/'.github/workflows/ci.yml').read_text()
-for script in ['lint','test','phpcs','secrets','docs','package-check']:
- if script not in composer['scripts'] or 'composer '+script not in workflow:errors.append('CI/script mismatch: '+script)
-for script in ['lint.py','run-phpcs.py','secret-scan.py','verify-docs.py','build-release.py','check-publication.py']:
+for script in ['lint','test','phpcs','secrets','docs','package-check','repository-check']:
+ expected='python3 tools/run-phpcs.py' if script=='phpcs' else 'composer '+script
+ if script not in composer['scripts'] or expected not in workflow:errors.append('CI/script mismatch: '+script)
+for script in ['lint.py','run-phpcs.py','secret-scan.py','verify-docs.py','build-release.py','check-publication.py','check-repository.py']:
  if not (root/'tools'/script).is_file():errors.append('Missing tool: '+script)
 print(f'Offline documentation checks: {len(files)} Markdown documents; {links} local links; {len(images)} PNG dimensions; runtime identity, Postman guard/fields and CI command wiring checked.')
 print('External URLs and hosted GitHub rendering/CI are not verified by this offline check.')

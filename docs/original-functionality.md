@@ -1,6 +1,6 @@
 # Supplied implementation audit
 
-The supplied production plugin is Plug'n Pay Direct Gateway for WooCommerce 1.3.2, attributed to PatSaTECH. The existing QuixDevs source is a mechanical namespace/branding adaptation. Both private source trees remain unchanged; [hash inventories](source-hashes.json) support the local preservation check.
+The supplied production plugin is Plug'n Pay Direct Gateway for WooCommerce 1.3.2, attributed to PatSaTECH. The existing QuixDevs source is a mechanical namespace/branding adaptation. Both private source trees remain unchanged; `docs/source-hashes.json` (local only) support the local preservation check.
 
 The gateway registers `plugnpaydirect`, uses classic credit-card fields, sends fresh-card requests to the existing Plug'n Pay remote CGI, completes orders using returned `orderID`, and retains full/partial refunds. Saved methods reuse a previous transaction through `authprev`; they are not verified independent vault tokens. Optional Subscriptions/Pre-Orders code exists but is not certified.
 

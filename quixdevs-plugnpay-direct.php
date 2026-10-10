@@ -8,7 +8,6 @@
  * Author URI: https://quixdevs.com/
  * Text Domain: quixdevs-plugnpay-direct
  * Domain Path: /languages/
- *
  * Derived from Plug'n Pay Direct Gateway for WooCommerce 1.3.2.
  * Original attribution: PatSaTECH (http://www.patsatech.com/).
  * Redistribution license not established; see UPSTREAM-NOTICES.md.

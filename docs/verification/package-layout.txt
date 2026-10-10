@@ -1,2 +1,0 @@
-Canonical in-memory package layout: 14 allowlisted files; CRC and exclusion checks passed.
-LAYOUT ONLY: no ZIP written; release approval remains blocked.

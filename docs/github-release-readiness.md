@@ -4,17 +4,18 @@ Target version **1.0.0**, local review dated **2026-10-10**. Repository workspac
 
 | Status | Finding |
 |---|---|
-| **PREPARED LOCALLY** | Controlled distribution, docs, artwork, mocked tests, CI configuration and gated packaging prepared |
+| **PREPARED LOCALLY** | ProductClock-style source, docs, artwork, exclusions, mocked tests, CI and gated packaging prepared |
+| **PRIVATE GITHUB REVIEW** | Source/upload hygiene prepared; existing Git checkout reused, no push performed |
 | **READY FOR PUBLIC GITHUB** | **NO — BLOCKED** by license and critical payment/security/runtime conditions |
 | **READY FOR WORDPRESS.ORG** | **NO — BLOCKED** by the same conditions plus directory metadata/Plugin Check/integration review |
 
 ## A. Files copied
 
-The [copy allowlist](copy-allowlist.json) names the main file, eight inherited include files, languages index, assets description, runtime readme and upstream notices. Development documents originated from the actual parent workspace `docs/`; the requested source-local report path was absent. [Source audit](source-audit.md). Original production inventory: **16 files unchanged**. Existing QuixDevs source inventory: **22 files unchanged**. [Hash manifest](source-hashes.json), [read-only verification](verification/source-preservation.txt).
+The [copy allowlist](copy-allowlist.json) names the main file, eight inherited include files, languages index, assets description, runtime readme and upstream notices. Development documents originated from the actual parent workspace `docs/`; the requested source-local report path was absent. [Source audit](source-audit.md). Original production inventory: **16 files unchanged**. Existing QuixDevs source inventory: **22 files unchanged**. `docs/source-hashes.json` (local only), `docs/verification/source-preservation.txt` (local only).
 
 ## B. Files excluded
 
-No original production backup/snapshot, private secret/configuration, customer/transaction data, database dump, certificate, original credential-bearing main file, OS metadata or unrelated project was copied. All seven inherited PNGs are excluded because rights are unconfirmed. Fresh development `vendor/` and Composer cache exist locally but are ignored and excluded from runtime packaging; they were not copied from source. Promotional graphics, screenshots/docs/tests/CI/Composer tooling are excluded from the package.
+No original production backup/snapshot, private secret/configuration, customer/transaction data, database dump, certificate, original credential-bearing main file, OS metadata or unrelated project was copied. All seven inherited PNGs are excluded because rights are unconfirmed. Fresh development `vendor/` and Composer cache exist locally but are ignored and excluded from runtime packaging; they were not copied from source. Promotional graphics, screenshots/docs/tests/CI/Composer tooling are excluded from the runtime package. Generated verification reports and the private source-hash manifest are also ignored and removed from the current Git index; all disk copies are retained. Existing historical commits still contain those reports and were not rewritten.
 
 ## C. Documentation created
 
@@ -22,7 +23,7 @@ Professional [README](../README.md), [merchant configuration](merchant-configura
 
 ## D. GitHub metadata
 
-Repository name, feature description, twelve topics, conditional v1.0.0 release title and installation instructions are in [github-listing.md](github-listing.md). Maintainer portfolio/social links are supplied attribution; no owner/repository/download URL or fake rating/count/badge is invented. No Git repo/remote was initialized and nothing was staged or pushed.
+Repository name, feature description, twelve topics, conditional v1.0.0 release title and installation instructions are in [github-listing.md](github-listing.md). Maintainer portfolio/social links are supplied attribution; no owner/repository/download URL or fake rating/count/badge is invented. An existing Git checkout and remote were found during final cleanup and reused. Local-only reports were removed from the index without deleting their disk copies; no commit, push, tag or release was made by this cleanup.
 
 ## E. REST API documentation status
 
@@ -52,7 +53,7 @@ Critical unresolved: shared payment/refund locking and replay, uncertain outcome
 
 ## J. Secret scanning result
 
-Final dependency-free policy scan reports **zero findings**, including local comparison with the removed inherited source value. Values are never printed. It scans repository text including PHP/docs/examples/Postman/CI/lockfile/reports; development vendor/cache/temp builds are excluded, PNGs inspected visually. No actual merchant/card/customer data was used in tests. This is scoped policy evidence, not a guarantee that arbitrary future content is safe. Review all staged files again before any future public commit. [Final scanner output](verification/secret-scan.txt).
+Final dependency-free policy scan reports **zero findings**, including local comparison with the removed inherited source value. Values are never printed. It scans repository text including PHP/docs/examples/Postman/CI/lockfile/reports; development vendor/cache/temp builds are excluded, PNGs inspected visually. No actual merchant/card/customer data was used in tests. This is scoped policy evidence, not a guarantee that arbitrary future content is safe. Read-only review of two reachable commits and 103 historical UTF-8 blobs found zero credential-policy findings; raw reports remain in historical commits and history was not rewritten. Review all staged files again before any future public commit. `docs/verification/secret-scan.txt` (local only).
 
 ## K. Licensing status
 
@@ -64,11 +65,11 @@ Final dependency-free policy scan reports **zero findings**, including local com
 
 ## M. ZIP status
 
-Canonical in-memory archive validates root, allowlisted files, exclusions and CRC. This is **layout only**, not installation or release approval. No release/diagnostic ZIP is written. Both publication gate and build command intentionally return failure while seven [machine-readable requirements](release-state.json) remain false. Required license text must be added once known. [Layout evidence](verification/package-layout.txt), [build refusal](verification/build-gate.txt).
+Canonical deterministic in-memory archive validates root, 15 allowlisted files (including CHANGELOG.md), exclusions, fixed entry metadata and CRC. This is **layout only**, not installation or release approval. No release/diagnostic ZIP is written. Both publication gate and build command intentionally return failure while seven [machine-readable requirements](release-state.json) remain false. Required license text must be added once known. `docs/verification/package-layout.txt` (local only), `docs/verification/build-gate.txt` (local only).
 
 ## N. GitHub release readiness
 
-**PREPARED LOCALLY / PRIVATE; PUBLIC GITHUB BLOCKED.** Resolve legal/security/payment/runtime requirements and verify a real disposable install before release approval. Do not publish a source archive merely because a release ZIP is blocked. [Publishing checklist](github-publishing-checklist.md), [draft release notes](github-release-notes.md). No public repository, push, release, messages or production changes performed.
+**CLEAN SOURCE HANDOFF PREPARED FOR PRIVATE GITHUB REVIEW; PUBLIC GITHUB BLOCKED.** Resolve legal/security/payment/runtime requirements and verify a real disposable install before release approval. Do not publish a source archive merely because a release ZIP is blocked. [Publishing checklist](github-publishing-checklist.md), [draft release notes](github-release-notes.md). No push, release, messages or production changes were performed by this cleanup; remote visibility was not queried or changed. [GitHub upload handoff](github-upload.md) documents source selection and existing-history limits.
 
 ## O. WordPress.org submission readiness
 

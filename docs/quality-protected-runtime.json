@@ -1,0 +1,55 @@
+{
+  "purpose": "Read-only proof that quality cleanup did not alter the six protected financial and authorization implementations.",
+  "baseline_snapshot": "Frozen 2026-10-15 baseline; raw snapshot path and source hashes retained in ignored local verification evidence",
+  "current_root": "Repository root",
+  "php_tokenizer_version": "8.4.13",
+  "algorithm": "SHA-256 of JSON-encoded PHP token sequence [token_id,text] or [literal,text], discarding only T_COMMENT, T_DOC_COMMENT and T_WHITESPACE. Both inputs are parsed by the same PHP tokenizer. No source content is copied into this report.",
+  "files": [
+    {
+      "file": "includes/class-payment-attempts.php",
+      "before_token_sha256": "83e284a8721bb7f1b35a87172f524b26b3169cd9addf152561b0ca7aa0f29c74",
+      "current_token_sha256": "83e284a8721bb7f1b35a87172f524b26b3169cd9addf152561b0ca7aa0f29c74",
+      "executable_tokens_identical": true
+    },
+    {
+      "file": "includes/class-attempt-command.php",
+      "before_token_sha256": "9b3478ce3de73e06422fa7d751ebd6855feeab832e790021b40fceb45a002f85",
+      "current_token_sha256": "9b3478ce3de73e06422fa7d751ebd6855feeab832e790021b40fceb45a002f85",
+      "executable_tokens_identical": true
+    },
+    {
+      "file": "includes/class-payment-input.php",
+      "before_token_sha256": "4629b876911ff6f3d93bf3638daa904c705119e47595265ca504fa7894c781f8",
+      "current_token_sha256": "4629b876911ff6f3d93bf3638daa904c705119e47595265ca504fa7894c781f8",
+      "executable_tokens_identical": true
+    },
+    {
+      "file": "includes/class-provider-request.php",
+      "before_token_sha256": "87b62d156e3786966fe52c98e658011669937b8dbedd6aa81aa6411ca8e798bf",
+      "current_token_sha256": "87b62d156e3786966fe52c98e658011669937b8dbedd6aa81aa6411ca8e798bf",
+      "executable_tokens_identical": true
+    },
+    {
+      "file": "includes/class-provider-response.php",
+      "before_token_sha256": "da3167279e2bf8f5b15d0710c4a096c8b895f1211543375019286bbc1bedc982",
+      "current_token_sha256": "da3167279e2bf8f5b15d0710c4a096c8b895f1211543375019286bbc1bedc982",
+      "executable_tokens_identical": true
+    },
+    {
+      "file": "includes/class-rest-authorization.php",
+      "before_token_sha256": "18bf350af98febcee14aa1d19515b5e26e94902989abfffaa8506460bceaf1bc",
+      "current_token_sha256": "18bf350af98febcee14aa1d19515b5e26e94902989abfffaa8506460bceaf1bc",
+      "executable_tokens_identical": true
+    }
+  ],
+  "all_six_identical": true,
+  "unchanged_semantics_verified": [
+    "Payment_Attempts: unique per-order INSERT IGNORE, BINARY compare-and-swap, durable states and flags, no automatic expiry/retry, GET_LOCK/RELEASE_LOCK reconciliation serialization, approved-before-WooCommerce-completion ordering and capability checks.",
+    "Attempt_Command: explicit core WP-CLI user identity, order capabilities, exact attempt and merchant evidence inputs, worker-stopped confirmation, no provider request or automatic retry.",
+    "Payment_Input: card type/length/Luhn/expiry/CVV/name validation, trusted positive KYD order amount checks, integer minor-unit arithmetic and bounded transaction reference validation.",
+    "Provider_Request: component-wise rawurlencode of existing scalar provider values; no field names or processor request semantics changed.",
+    "Provider_Response: split-before-decode parsing, duplicate/malformed field rejection, required successful charge reference, known-PAN/CVV/credential echo rejection and whitelisted safe public fragments.",
+    "Rest_Authorization: HTTPS, authenticated WordPress identity, constant-time legacy key comparison, validated bounded order ID, owner or explicit backend capability plus order permission, indistinguishable unavailable/forbidden order errors."
+  ],
+  "limits": "This comparison covers the six listed files only. Gateway orchestration and helper/compatibility changes have separate unit and real WordPress/WooCommerce checks; token identity is not a substitute for those checks."
+}

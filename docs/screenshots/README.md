@@ -1,6 +1,6 @@
 # Genuine screenshot capture plan
 
-No WordPress/WooCommerce screenshots were created: there is no provisioned disposable site for this plugin. The first four filenames below are planned, not existing images. `05-api-documentation.png` exists: a genuine local Marked/Chrome rendering of the REST documentation at 1440×1100, visually reviewed and embedded in the README. It is documentation, not an admin capture. Branding graphics are not admin screenshots.
+No WordPress/WooCommerce screenshots were created: this pass prioritized recorded platform/ZIP verification rather than browser UI captures. A fresh disposable site was tested and then stopped. The first four filenames below are planned, not existing images. `05-api-documentation.png` exists: a genuine local Marked/Chrome rendering of the REST documentation at 1440×1100, visually reviewed and embedded in the README. It is documentation, not an admin capture. Branding graphics are not admin screenshots.
 
 Use a disposable local installation with fake products/accounts/orders. Copy only the allowlisted runtime under the canonical slug, activate one gateway copy, configure synthetic server/gateway values and intercept all Plug'n Pay HTTP requests with fixtures. Never use a production site or complete a real charge. Confirm no live transport is possible before capture.
 

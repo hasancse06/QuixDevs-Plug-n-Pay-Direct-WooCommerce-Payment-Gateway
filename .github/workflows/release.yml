@@ -1,0 +1,166 @@
+name: Verify runtime package and optionally prepare an unpublished draft
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact reviewed full source commit SHA (40 lowercase hexadecimal characters)
+        required: true
+        type: string
+      tag:
+        description: Existing v1.0.0 tag; checked only for draft preparation, never created or moved
+        required: true
+        default: v1.0.0
+        type: string
+      prepare_draft:
+        description: Require all release gates and prepare/resume an unpublished draft (default builds an approval-pending candidate)
+        required: true
+        default: false
+        type: boolean
+      use_app_token:
+        description: Use configured RELEASE_APP_CLIENT_ID and RELEASE_APP_PRIVATE_KEY with Contents/Workflows write
+        required: true
+        default: false
+        type: boolean
+
+# No push/tag trigger and no publication path. Tests and builds have read-only tokens.
+permissions:
+  contents: read
+
+concurrency:
+  group: plugnpay-release-${{ github.repository }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  verify_and_package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Validate immutable source input
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          [[ "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$RELEASE_TAG" == 'v1.0.0' ]]
+      - name: Check out the exact workflow/tooling revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: automation
+          persist-credentials: false
+      - name: Check out the exact reviewed plugin source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.source_sha }}
+          path: source
+          persist-credentials: false
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom
+          tools: composer
+          coverage: none
+      - name: Confirm checkout identity
+        env:
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: test "$(git -C source rev-parse HEAD)" = "$SOURCE_SHA"
+      - name: Run the exact source checkout tests without write credentials
+        working-directory: source
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer lint
+          composer test
+          composer phpcs
+          php tests/direct-access.php
+          php tests/missing-dependency.php
+          php tests/missing-key.php
+          composer docs
+          composer repository-check
+      - name: Test reviewed packaging and draft invariants using mocked API responses
+        run: python3 -m unittest discover -s automation/tests/Packaging -v
+      - name: Scan the exact source with the reviewed scanner
+        run: python3 automation/tools/secret-scan.py --root source
+      - name: Verify an existing tag without modifying it
+        if: ${{ inputs.prepare_draft }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: python3 automation/tools/create-draft-release.py --verify-tag-only --repo "$RELEASE_REPOSITORY" --tag "$RELEASE_TAG" --expected-commit "$SOURCE_SHA"
+      - name: Build the allowlisted runtime and checksum; release mode fails closed on every gate
+        env:
+          PREPARE_DRAFT: ${{ inputs.prepare_draft }}
+        run: |
+          options=()
+          if [[ "$PREPARE_DRAFT" == 'true' ]]; then options+=(--release); fi
+          python3 automation/tools/build-release.py --source-root source --output-dir artifacts "${options[@]}"
+          (cd artifacts && sha256sum --check quixdevs-plugnpay-direct.zip.sha256)
+          unzip -t artifacts/quixdevs-plugnpay-direct.zip
+      - name: Retain runtime artifacts and external review manifest
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: plugnpay-runtime-${{ inputs.source_sha }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  draft:
+    if: ${{ inputs.prepare_draft }}
+    needs: verify_and_package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the exact workflow/tooling revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: automation
+          persist-credentials: false
+      - name: Check out the identical reviewed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ inputs.source_sha }}
+          path: source
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: plugnpay-runtime-${{ inputs.source_sha }}
+          path: artifacts
+      - name: Provide PHP tokenizer for source-only dependency inspection
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.4'
+          coverage: none
+      - name: Mint a repository-scoped installation token when explicitly selected
+        if: ${{ inputs.use_app_token }}
+        id: app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          # No owner/repositories inputs: scope is only the current repository.
+          permission-contents: write
+          permission-workflows: write
+      - name: Rebuild source-bound bytes and create/resume by numeric release ID
+        env:
+          USE_APP_TOKEN: ${{ inputs.use_app_token }}
+          APP_TOKEN: ${{ steps.app.outputs.token }}
+          WORKFLOW_TOKEN: ${{ github.token }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+        run: |
+          if [[ "$USE_APP_TOKEN" == 'true' ]]; then
+            [[ -n "$APP_TOKEN" ]]
+            export GH_TOKEN="$APP_TOKEN"
+          else
+            export GH_TOKEN="$WORKFLOW_TOKEN"
+          fi
+          python3 automation/tools/create-draft-release.py --repo "$RELEASE_REPOSITORY" --tag "$RELEASE_TAG" --expected-commit "$SOURCE_SHA" --source-root source --artifact-dir artifacts

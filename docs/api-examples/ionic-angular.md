@@ -32,4 +32,4 @@ export class PaymentPreparationService {
 }
 ```
 
-This is not a runnable payment integration. Do not add direct raw-card submission while the candidate is blocked. Backend key storage and endpoint authorization do not repair missing shared charge/refund locks, HTTP 123, parser/raw-output or refund defects. Mobile memory, analytics/crash reports and direct-card processing still need security review; no PCI certification is claimed.
+This specimen describes UI intent, not a runnable raw-card payment integration. Route calls through a trusted authenticated backend that verifies customer/order scope. The plugin retains the route/body fields and adds a shared attempt journal, encoded values, corrected refund results and completed HTTP200 business bodies. Review the documented client migration before deployment. Mobile memory, analytics/crash reports and direct-card processing still need assessment; no PCI certification is claimed.

@@ -1,0 +1,355 @@
+{
+  "baseline": "Frozen116-file source snapshot at start of final quality pass, 2026-10-15",
+  "current_task_changes": [
+    {
+      "file": ".github/workflows/ci.yml",
+      "change": "modified"
+    },
+    {
+      "file": ".github/workflows/release.yml",
+      "change": "modified"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "change": "modified"
+    },
+    {
+      "file": "README.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/api-authentication.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/api-examples/php.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/configuration.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/functional-parity.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/github-release-notes.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/github-release-readiness.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/github-upload.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/postman/README.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/publication-readiness.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/quality-files-changed.json",
+      "change": "added"
+    },
+    {
+      "file": "docs/quality-inventory.json",
+      "change": "added"
+    },
+    {
+      "file": "docs/quality-inventory.md",
+      "change": "added"
+    },
+    {
+      "file": "docs/quality-protected-runtime.json",
+      "change": "added"
+    },
+    {
+      "file": "docs/quality-suppressions-compat.json",
+      "change": "added"
+    },
+    {
+      "file": "docs/quality-suppressions-includes.json",
+      "change": "added"
+    },
+    {
+      "file": "docs/release-distribution.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/release-state.json",
+      "change": "modified"
+    },
+    {
+      "file": "docs/rest-api.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/rest-client-comparison.md",
+      "change": "added"
+    },
+    {
+      "file": "docs/rights-replacement-plan.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/screenshots/05-api-documentation.png",
+      "change": "modified"
+    },
+    {
+      "file": "docs/security.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/testing.md",
+      "change": "modified"
+    },
+    {
+      "file": "docs/troubleshooting.md",
+      "change": "modified"
+    },
+    {
+      "file": "includes/abstracts/abstract-wc-plugnpay-payment-gateway.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-customer-cards.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-customer.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-gateway-exception.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-gateway.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-helper.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-logger.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-rest-gateway.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/class-wc-plugnpay-customer-cards.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/class-wc-plugnpay-customer.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/class-wc-plugnpay-exception.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/class-wc-plugnpay-helper.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/class-wc-plugnpay-logger.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/compat/class-pre-orders-compat.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/compat/class-subs-compat.php",
+      "change": "added"
+    },
+    {
+      "file": "includes/compat/class-wc-plugnpay-pre-orders-compat.php",
+      "change": "modified"
+    },
+    {
+      "file": "includes/compat/class-wc-plugnpay-subs-compat.php",
+      "change": "modified"
+    },
+    {
+      "file": "languages/index.php",
+      "change": "modified"
+    },
+    {
+      "file": "phpunit.xml.dist",
+      "change": "modified"
+    },
+    {
+      "file": "quixdevs-plugnpay-direct.php",
+      "change": "modified"
+    },
+    {
+      "file": "readme.txt",
+      "change": "modified"
+    },
+    {
+      "file": "tests/CompatQualityTest.php",
+      "change": "added"
+    },
+    {
+      "file": "tests/GatewayQualityTest.php",
+      "change": "added"
+    },
+    {
+      "file": "tests/HelperQualityTest.php",
+      "change": "added"
+    },
+    {
+      "file": "tests/bootstrap.php",
+      "change": "modified"
+    },
+    {
+      "file": "tests/integration/worker-gateway-boundaries.php",
+      "change": "added"
+    },
+    {
+      "file": "tests/integration/worker-helper-metadata.php",
+      "change": "added"
+    },
+    {
+      "file": "tools/quality-inventory.py",
+      "change": "added"
+    },
+    {
+      "file": "tools/verify-docs.py",
+      "change": "modified"
+    }
+  ],
+  "full_pending_diff_base": "faf606190e99637777eba280fc0e777d68e1f0b1",
+  "full_pending_source_files": [
+    ".github/workflows/ci.yml",
+    ".github/workflows/release.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "COPYING.GPL3",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "THIRD-PARTY-NOTICES.md",
+    "UPSTREAM-NOTICES.md",
+    "composer.json",
+    "docs/api-authentication.md",
+    "docs/api-examples/curl.md",
+    "docs/api-examples/ionic-angular.md",
+    "docs/api-examples/javascript.md",
+    "docs/api-examples/php.md",
+    "docs/architecture.md",
+    "docs/compatibility.md",
+    "docs/configuration.md",
+    "docs/functional-parity.md",
+    "docs/github-listing.md",
+    "docs/github-publishing-checklist.md",
+    "docs/github-release-notes.md",
+    "docs/github-release-readiness.md",
+    "docs/github-upload.md",
+    "docs/implementation-report.md",
+    "docs/installation.md",
+    "docs/licensing-review.md",
+    "docs/merchant-configuration.md",
+    "docs/payment-flow.md",
+    "docs/postman/README.md",
+    "docs/publication-readiness.md",
+    "docs/quality-files-changed.json",
+    "docs/quality-inventory.json",
+    "docs/quality-inventory.md",
+    "docs/quality-protected-runtime.json",
+    "docs/quality-suppressions-compat.json",
+    "docs/quality-suppressions-includes.json",
+    "docs/reconciliation.md",
+    "docs/refunds.md",
+    "docs/release-checklist.md",
+    "docs/release-distribution.md",
+    "docs/release-state.json",
+    "docs/rest-api.md",
+    "docs/rest-client-comparison.md",
+    "docs/rights-replacement-plan.md",
+    "docs/screenshots/05-api-documentation.png",
+    "docs/screenshots/README.md",
+    "docs/security.md",
+    "docs/source-audit.md",
+    "docs/testing.md",
+    "docs/troubleshooting.md",
+    "docs/version-history.md",
+    "includes/abstracts/abstract-wc-plugnpay-payment-gateway.php",
+    "includes/abstracts/class-payment-gateway.php",
+    "includes/class-attempt-command.php",
+    "includes/class-customer-cards.php",
+    "includes/class-customer.php",
+    "includes/class-gateway-exception.php",
+    "includes/class-gateway.php",
+    "includes/class-helper.php",
+    "includes/class-logger.php",
+    "includes/class-payment-attempts.php",
+    "includes/class-payment-input.php",
+    "includes/class-provider-request.php",
+    "includes/class-provider-response.php",
+    "includes/class-rest-authorization.php",
+    "includes/class-rest-gateway.php",
+    "includes/class-wc-plugnpay-customer-cards.php",
+    "includes/class-wc-plugnpay-customer.php",
+    "includes/class-wc-plugnpay-exception.php",
+    "includes/class-wc-plugnpay-helper.php",
+    "includes/class-wc-plugnpay-logger.php",
+    "includes/compat/class-pre-orders-compat.php",
+    "includes/compat/class-subs-compat.php",
+    "includes/compat/class-wc-plugnpay-pre-orders-compat.php",
+    "includes/compat/class-wc-plugnpay-subs-compat.php",
+    "languages/index.php",
+    "phpcs.xml.dist",
+    "phpunit.xml.dist",
+    "quixdevs-plugnpay-direct.php",
+    "readme.txt",
+    "tests/CompatQualityTest.php",
+    "tests/ContractTest.php",
+    "tests/GatewayQualityTest.php",
+    "tests/HelperQualityTest.php",
+    "tests/Packaging/test_release.py",
+    "tests/PaymentAttemptsTest.php",
+    "tests/ProviderResponseTest.php",
+    "tests/SecurityTest.php",
+    "tests/bootstrap.php",
+    "tests/direct-access.php",
+    "tests/integration/platform.php",
+    "tests/integration/select-storage.php",
+    "tests/integration/worker-bootstrap.php",
+    "tests/integration/worker-gateway-boundaries.php",
+    "tests/integration/worker-helper-metadata.php",
+    "tests/integration/worker-payment.php",
+    "tests/integration/worker-reconciliation-cli.php",
+    "tests/integration/worker-reconciliation-hook.php",
+    "tests/integration/worker-refund-accounting.php",
+    "tests/integration/worker-runner.php",
+    "tests/missing-dependency.php",
+    "tools/build-release.py",
+    "tools/check-publication.py",
+    "tools/check-repository.py",
+    "tools/create-draft-release.py",
+    "tools/integration-check.py",
+    "tools/quality-inventory.py",
+    "tools/release_package.py",
+    "tools/secret-scan.py",
+    "tools/verify-docs.py"
+  ],
+  "exclusions": "Ignored evidence, dependencies and build outputs; source/test/docs/branding/workflows are included. Self/report files are listed without recursive content hashes.",
+  "git_index_changed": false,
+  "original_source_directories_changed": false
+}

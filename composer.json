@@ -24,6 +24,8 @@
     "docs": "python3 tools/verify-docs.py",
     "package-check": "python3 tools/build-release.py --check",
     "release-check": "python3 tools/check-publication.py",
-    "repository-check": "python3 tools/check-repository.py"
-  }
+    "repository-check": "python3 tools/check-repository.py",
+    "test-packaging": "python3 -m unittest discover -s tests/Packaging -v"
+  },
+  "license": "GPL-2.0-or-later"
 }

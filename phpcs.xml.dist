@@ -6,6 +6,7 @@
     <properties><property name="custom_capabilities" type="array">
       <element value="quixdevs_plugnpay_pay_orders"/>
       <element value="edit_shop_order"/>
+      <element value="manage_woocommerce"/>
     </property></properties>
   </rule>
 </ruleset>

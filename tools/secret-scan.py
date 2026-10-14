@@ -4,7 +4,8 @@ from pathlib import Path
 import argparse,re,sys
 root=Path(__file__).resolve().parents[1]
 skip={'vendor','.composer-cache','.git','.phpunit.cache','dist','node_modules','__pycache__'}
-parser=argparse.ArgumentParser();parser.add_argument('--compare-source',type=Path);args=parser.parse_args()
+parser=argparse.ArgumentParser();parser.add_argument('--root',type=Path,default=root);parser.add_argument('--compare-source',type=Path);args=parser.parse_args()
+root=args.root.resolve()
 known=[]
 if args.compare_source:
  source=args.compare_source/'quixdevs-plugnpay-direct.php'

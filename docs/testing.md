@@ -1,55 +1,80 @@
-# Executed checks and verification limits
+# Verification report — 2026-10-15
 
-Local execution: **PHP 8.4.13**, PHPUnit **9.6.38**, PHP_CodeSniffer **3.13.6**, WordPress Coding Standards **3.4.1**. Composer development dependencies were installed from the lockfile. No live Plug'n Pay requests, real credentials or real customer data were used.
+The maintainer reports production use of the original gateway. These results independently verify the release candidate with intercepted provider HTTP. No live charge/refund, merchant login or deployment occurred. Original16-file and intermediate22-file source inventories remain unchanged.
 
-| Check | Actual result |
+| Check | Executed final result |
 |---|---|
-| PHPUnit | **25 tests, 127 assertions passed** |
-| PHP syntax | All 16 project PHP files passed (11 runtime, four test files, artwork generator) |
-| Missing WooCommerce | Safe initializer return passed |
-| Missing server verification key | Fails before mocked HTTP; passed |
-| Source preservation | Original 16 files and QuixDevs source 22 files unchanged |
-| Repository secret policy | Zero findings, including comparison to private inherited value; see recorded final scan |
-| Full WordPress standards | **3,858 errors, 328 warnings**, 3,740 fixable; nonzero exit, not clean |
-| New REST authorization class standards | Zero errors/warnings under full configured WordPress rules |
-| Documentation | Offline links, image dimensions, identity, guarded Postman fields and CI wiring checked |
-| Canonical archive layout | In-memory paths/CRC/exclusions checked; no ZIP written |
-| Publication/release gates | Expected refusal while seven requirements remain false |
-| Composer metadata | Valid; missing-license warning intentionally retained |
+| PHPUnit 9.6.38 on PHP 8.2.4 and PHP 8.4.13 | **102 tests /755 assertions passed on each** |
+| Python packaging/draft tests | **38 passed**, mocked GitHub API |
+| Syntax on PHP 8.2.4 and PHP 8.4.13 | **48 project PHP files passed on each** |
+| Direct main access / missing WooCommerce / missing server verification key | Passed on both PHP versions; no provider submission |
+| Real WordPress 6.9 / WooCommerce 10.9.0 / MariaDB 10.4.28 / PHP 8.4.13 | **149 posts +149 HPOS =298 assertions passed** |
+| Additional actual PHP 8.2.4 HPOS platform run | **39 assertions passed** |
+| Final ZIP installation and activation | Real WP-CLI; all **32** archived files match installed hashes before/after tests |
+| Official WordPress/WooCommerce/Plugin Check code checksums | Verified |
+| Full PHPCS 3.13.6 / WPCS 3.4.1 | **368 errors/41 warnings →0 errors/0 warnings** |
+| Plugin Check2.1.0 including experimental checks | **40 errors/96 warnings →0 errors/2 warnings**; actual messages counted |
+| actionlint 1.7.12 | Both workflows pass; official binary archive checksum verified |
+| Secret/source/docs/repository/snapshot/archive policies | Pass; no private values printed; source inventories unchanged |
+| Approved-release gate | Expected refusal for **REST client cutover acceptance only** |
 
-## Regression scope
+Final installer: **77,662 bytes**, SHA-256 `5079dae17b83a5669d2a344f74105927c0c26121468d1f0584aafa58536b0d4a`. The manifest and sidecar accompany `dist/candidate/quixdevs-plugnpay-direct.zip`. [Complete release report](github-release-readiness.md).
 
-The self-contained mocks load this target plugin only. Tests cover initialization/registration/settings/fields, full fresh-card provider mapping and hash ordering with synthetic server configuration, completion/transaction references, decline/timeout, HTTPS/configuration denial, route/handler permissions, anonymous and cross-customer denial, explicit backend capability requirements, malformed IDs/keys, pending/paid orders, valid/invalid saved tokens, refund mapping and token persistence. No tested token-save path persists full PAN or CVV.
+## Payment, refund and authorization coverage
 
-Sequential paid-order repetition is rejected. **Concurrent authorized requests still submit twice.** Characterization cases intentionally reproduce this defect, unsafe refund failure/pending arrays, repeated returns, raw sensitive provider fragments and REST WP_Error transport crashes. Tests asserting these inherited defects are documentation/regression evidence, not successful duplicate prevention, redaction or payment security clearance.
+The original 80 tests/593 assertions still pass. Added 22 tests/162 assertions cover helper metadata/input, optional adapters and gateway boundaries. No expectations were changed to conceal a regression. Valid cardholder punctuation survives WordPress slashing and component encoding; malformed token arrays/IDs cannot reach lookup, journal or HTTP.
 
-## Reproduce locally
+Contracts cover gateway/settings/bootstrap, classic form, provider field/hash ordering, trusted positive KYD amounts, exact success/reference, definite declines, uncertain results, HTTPS/identity/order permissions, missing/foreign tokens and per-token references. Parser cases include encoded status overrides, duplicate/malformed fields, missing references, formatted known PAN/CVV echoes and private diagnostics. Legitimate numeric provider IDs remain usable even when they happen to pass a card checksum.
+
+The journal is exercised against database failures, stale compare-and-swap, overlapping checkout/REST/refund operations, reset paid-order status, uncertain timeouts/pending/problem replies, worker crashes, durable approval before local completion and order/reference drift during HTTP. No automatic uncertain-outcome retry is enabled. Reconciliation checks exact attempts, permissions, immutable context, lock contention/reentrancy and recovery before/after WooCommerce persistence. The six protected financial/input/authorization implementations have identical executable-token hashes to the frozen baseline; [proof and limits](quality-protected-runtime.json).
+
+Each real PHP 8.4 storage run contains:
+
+| Suite | Assertions per store |
+|---|---:|
+| Core platform, REST dispatch and Application Password identity | 39 |
+| Independent worker INSERT/CAS races and crash recovery | 26 |
+| Native WooCommerce refund accounting | 27 |
+| Actual WP-CLI authorization and reconciliation overlap | 16 |
+| Helper canonical/legacy metadata and literal reference lookup | 13 |
+| Nonce/order-bound legacy return, typed IP/token and slashed-name boundary | 28 |
+| Total | **149** |
+
+Separate PHP workers/mysqli connections race the first INSERT and declined-state CAS. A forced exit leaves an attempt blocked. CLI reconciliation overlap pauses at the real completion hook and denies the second worker without duplicate completion or transport.
+
+Real `wc_create_refund` creates its child before the gateway callback. Verified full/partial requests retain one confirmed child; decline/pending/timeout rolls back unconfirmed accounting without booking a false refund. The one-Return limit remains. Saved-card tests choose older mapped cardA despite newer user/cardB metadata; unmapped methods are denied. Actual WordPress REST dispatch tests owner, foreign/guest orders, generic forbidden/unknown errors and explicit backend permissions.
+
+Helper tests caught a real CPT incompatibility while replacing the old postmeta query: HPOS supports `meta_query`, while this WooCommerce CPT adapter needs its supported scoped custom-query mapping. The corrected implementation passes the unchanged 13 assertions in both stores, including quoted/%/_/& literal references, canonical zero precedence, caller-saved updates and persistent canonical/legacy deletions.
+
+## Quality findings and limits
+
+The [complete Markdown inventory](quality-inventory.md) and [machine-readable inventory](quality-inventory.json) embed all **545 baseline tool occurrences**, grouped by rule/file/severity/classification with every original line/column/message, count, correction and behavior impact. Both tools can report the same source issue; their counts are not unique defect counts. CategoryE has no runtime findings.
+
+Only two final findings remain: Plugin Check `unexpected_markdown_file` on root `UPSTREAM-NOTICES.md` and `THIRD-PARTY-NOTICES.md`, file-level line 0. Full legal/provenance notices are deliberately retained in this GitHub distribution. These warnings remain visible; no checker rule is disabled for them. Full runtime WPCS has no findings. All 23 narrow statement annotations are recorded, including pre-existing required SQL uniqueness/CAS/advisory-lock queries, delegated nonce/custom-validator boundaries, supported metadata queries and public method/named-argument compatibility. No runtime file/directory or global rule is excluded.
+
+A marked disposable site and socket-only MariaDB instance were used; existing sites/databases were untouched. The temporary database was shut down after final checks. All integration runs had zero stderr, new PHP diagnostics and live processor HTTP.
+
+Browser ZIP-upload/admin captures, real TLS web-server authentication, merchant authorization/settlement and hosted GitHub runs were not exercised. PHP 8.3 is configured in CI but not installed locally. Core posts/HPOS checks do not certify optional Subscriptions/Pre-Orders, and Checkout Blocks is not implemented. Single-primary database coordination with same-connection lock affinity is assumed. PHPStan is not configured. Direct-card PCI obligations and separately authorized processor acceptance remain operational work, not a claim that a tested defect is unresolved.
+
+## Reproduce local checks
 
 ```sh
 composer install --no-interaction --prefer-dist
 composer lint
 composer test
+composer test-packaging
+php tests/direct-access.php
 php tests/missing-dependency.php
 php tests/missing-key.php
 composer secrets
 composer docs
+composer repository-check
+python3 tools/check-repository.py --snapshot-check
 composer package-check
 composer phpcs
 composer release-check
 ```
 
-`composer phpcs` must currently report inherited findings. `composer release-check` and `python3 tools/build-release.py` must fail while release requirements are unresolved. A local maintainer can additionally run `python3 tools/secret-scan.py --compare-source ../quixdevs-plugnpay-direct` without printing the private value, and `python3 tools/verify-sources.py` to compare both private siblings. CI has no access to those siblings and does not claim source-preservation verification.
+The last command intentionally returns nonzero until client acceptance is recorded. Both workflows enforce WPCS. [Plugin Check helper](../tools/plugin-check.sh) needs a disposable WP/WC site. [Platform helper](../tools/integration-check.py) and scripts under `tests/integration/` require the marked installation and full HTTP interception; never point them at production.
 
-## Unavailable or not executed
-
-Actual WordPress/WooCommerce authentication and REST serialization, gateway activation, HPOS, optional extensions, Plugin Check, installed ZIP and processor sandbox/production integration were **not run**. WP-CLI is unavailable and no disposable WordPress/database environment is provisioned. The `WC_VERSION` value in the bootstrap is only a mock branch selector, never an installed version claim. Local PHP 8.2/8.3 tests were not run; the configured 8.2/8.3/8.4 GitHub matrix has not executed on GitHub.
-
-[Plugin Check helper](../tools/plugin-check.sh) requires an explicitly disposable site, WooCommerce, Plugin Check and WP-CLI. It is not a substitute for provisioning/testing them. The README/API render preview is local Markdown rendered with Marked and a temporary headless Chrome profile, not a hosted GitHub run or WordPress screenshot.
-
-## Evidence and repository hygiene
-
-The table above is the committed verification summary. Raw tool output, absolute local paths, review diffs, preview captures and dependency-license inventories remain under ignored `docs/verification/`. The private source-hash inventory is ignored as `docs/source-hashes.json`. They are local maintainer evidence, not required files for a clone or hosted CI. Re-run the documented commands to generate current results.
-
-`composer repository-check` verifies tracked file exclusions and required source/docs/artwork. `python3 tools/check-repository.py --snapshot-check` creates a temporary copy of upload candidates without ignored files and runs docs/secret/package-layout checks there. This confirms the repository does not depend on local reports or vendor/cache directories. Historical commits are audited separately; untracking a report does not remove it from existing history.
-
-The previous private report's 22 tests/124 assertions and older standards counts are historical, not these results. No standards rules were globally disabled to obtain a green result.
+Raw before/after commands, installed hashes and per-assertion reports remain ignored under `docs/verification/quality-2026-10-15/`. Public inventories retain complete portable findings. With those reports present, `python3 tools/quality-inventory.py` reproduces the inventory. A clone does not need private sibling sources, local sites or ignored reports for CI/package verification. [Release handoff](release-distribution.md).

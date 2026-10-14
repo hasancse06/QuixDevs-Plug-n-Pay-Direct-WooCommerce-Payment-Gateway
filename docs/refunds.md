@@ -1,9 +1,21 @@
-# Refund implementation retained
+# Refunds and reconciliation
 
-`Gateway::process_refund(order_id, amount = null, reason = '')` is unchanged in the distribution copy. WooCommerce provides normal caller authorization; no independent refund REST route exists. Do not expose this PHP callback through an unauthenticated wrapper.
+The gateway retains the existing Plug'n Pay `mode=return` operation for full or partial amounts. It does not invent a refund REST route or switch to `returnprev`, credits or a different settlement operation. Merchant credentials, `orderID`, `card-amount` and KYD remain the provider fields; each value is form-encoded before transport.
 
-The processor request remains `publisher-name`, `publisher-password`, `mode=return`, `orderID=order transaction_id`, `card-amount=amount`, `currency=KYD`, at the original URL/transport settings. Reason is not sent. Full and partial amounts are forwarded unchanged; tests verify mapping, not merchant-specific settlement support.
+## Validated refund operation
 
-The inherited condition enters when a reference exists OR amount <= 0. Success and pending return `['result'=>'success']`; failure/transport errors return `['result'=>'failure']`; skipped branch returns true. Both arrays are truthy and do not match WooCommerce's [documented bool/WP_Error contract](https://woocommerce.github.io/code-reference/classes/WC-Payment-Gateway.html). Pending does not prove a completed refund. Repeated calls are not locked/idempotent. These are release blockers preserved for explicit financial review, not deleted functionality or verified safe behavior.
+An order, a safe existing provider transaction reference, KYD currency and a positive supported two-decimal amount are required. Amounts cannot exceed the trusted order total. The same durable per-order SQL journal protects checkout, REST and refunds across PHP workers. The first refund claims the operation before HTTP; overlapping/replayed calls stop before transport. A successful or uncertain refund is not automatically retried.
 
-Do not automatically retry ambiguous/pending outcomes. Reconcile authorized merchant records and WooCommerce refunds before another attempt. The [provider Return specification](https://docs.plugnpay.com/docs/integration-specifications-documents/remote-api-integration-specification/section-2.-remote-transaction-administration/transaction-administration---return/) is a follow-up reference; no new processor restriction, protocol field or settlement assumption was introduced.
+`process_refund()` now returns **true only for verified provider success** and `WP_Error` for rejection, invalid input, unavailable journal, pending or uncertain outcomes. The inherited associative failure/pending arrays were truthy to WooCommerce and could falsely record success; they were corrected. Success need not repeat `orderID` in the response because this provider operation differs from charge authorization.
+
+WooCommerce's normal refund UI/core endpoints enforce their own nonce/capabilities. The gateway validates financial context again; it does not add a blanket interactive-user check that would break legitimate server/cron callers. There is no unauthenticated refund endpoint in this plugin.
+
+## Provider limits and uncertain results
+
+Official Plug'n Pay documentation permits only **one `return` per original transaction**, even for a partial amount. This plugin blocks a second return rather than silently switching transaction type. A return against an unsettled authorization may void it; this task did not verify actual merchant settlement. See the [official Return specification](https://docs.plugnpay.com/docs/integration-specifications-documents/remote-api-integration-specification/section-2.-remote-transaction-administration/return/).
+
+Pending, transport errors, malformed responses, nonfinal failures and interrupted workers retain a durable blocked record. A merchant must compare processor and WooCommerce records before deciding whether money moved. A failure to receive a response does not prove that no refund occurred.
+
+Use the capability-checked [reconciliation procedure](reconciliation.md) only after the original worker has stopped and the processor result is confirmed. Confirmed `refunded` records must be reflected in WooCommerce accounting manually **without sending another processor request**. Confirmed `not-refunded` can release that reviewed attempt for a legitimate retry. The command does not query, charge or refund the processor.
+
+The automated tests intercept all provider HTTP. They establish WooCommerce return contracts, request mapping, accounting/authorization paths and worker exclusion; they do not prove settlement. [Test evidence](testing.md), [security/PCI](security.md).

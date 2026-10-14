@@ -2,6 +2,9 @@
 /**
  * Authorize the retained REST payment operation without changing processor fields.
  *
+ * Copyright (c) 2026 Md Abu Hasan / QuixDevs.
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ *
  * @package QuixDevs\PlugNPayDirect
  */
 
@@ -32,8 +35,14 @@ final class Rest_Authorization {
 			return new WP_Error( 'quixdevs_plugnpay_authentication_required', __( 'An authenticated payment caller is required.', 'quixdevs-plugnpay-direct' ), array( 'status' => 401 ) );
 		}
 
+		if ( ! is_object( $request ) || ! is_callable( array( $request, 'get_params' ) ) ) {
+			return new WP_Error( 'quixdevs_plugnpay_invalid_request', __( 'A valid payment request is required.', 'quixdevs-plugnpay-direct' ), array( 'status' => 400 ) );
+		}
 		$parameters = $request->get_params();
-		$key        = $parameters['plugnpaydirect-client-key'] ?? null;
+		if ( ! is_array( $parameters ) ) {
+			return new WP_Error( 'quixdevs_plugnpay_invalid_request', __( 'A valid payment request is required.', 'quixdevs-plugnpay-direct' ), array( 'status' => 400 ) );
+		}
+		$key = $parameters['plugnpaydirect-client-key'] ?? null;
 		if ( ! is_string( $client_key ) || '' === $client_key || ! is_string( $key ) || '' === $key || ! hash_equals( $client_key, $key ) ) {
 			return new WP_Error( 'quixdevs_plugnpay_invalid_client_key', __( 'Invalid payment client credentials.', 'quixdevs-plugnpay-direct' ), array( 'status' => 401 ) );
 		}
@@ -43,6 +52,10 @@ final class Rest_Authorization {
 			return new WP_Error( 'quixdevs_plugnpay_invalid_order', __( 'A positive order ID is required.', 'quixdevs-plugnpay-direct' ), array( 'status' => 400 ) );
 		}
 
+		$digits = ltrim( (string) $order_id, '0' );
+		if ( strlen( $digits ) > strlen( (string) PHP_INT_MAX ) || ( strlen( $digits ) === strlen( (string) PHP_INT_MAX ) && strcmp( $digits, (string) PHP_INT_MAX ) > 0 ) ) {
+			return new WP_Error( 'quixdevs_plugnpay_invalid_order', __( 'A positive order ID is required.', 'quixdevs-plugnpay-direct' ), array( 'status' => 400 ) );
+		}
 		$order = wc_get_order( (int) $order_id );
 		if ( ! $order ) {
 			return self::denied();

@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "scope": "includes/compat/*.php",
+  "baseline": {
+    "wpcs_errors": 52,
+    "wpcs_warnings": 3,
+    "plugin_check_errors": 3,
+    "plugin_check_warnings": 2
+  },
+  "remaining_suppressions": [
+    {
+      "file": "includes/compat/class-subs-compat.php",
+      "line": 84,
+      "code": "WordPress.Security.NonceVerification.Recommended",
+      "classification": "D. Legitimate false positive",
+      "reason": "The method only tests the presence of two WooCommerce navigation flags; it reads no submitted value and mutates no data. Optional payment-method changes are handled separately and fail closed while their required adapter APIs are unavailable. Adding a new nonce to this read-only predicate would change the existing navigation contract.",
+      "scope": "one return statement; both presence checks on the same line",
+      "behavior_change": false
+    }
+  ],
+  "filename_handling": "Canonical class filenames contain the class bodies; historical filenames are static require_once shims, retaining include compatibility without suppressing filename rules.",
+  "correctness_fixes": [
+    "Use WooCommerce order/subscription CRUD for HPOS metadata reads, writes and deletions, and save changes.",
+    "Read saved_cards from woocommerce_plugnpaydirect_settings without recursively constructing Gateway.",
+    "Return controlled failure before absent Pre-Orders/source/3DS adapter methods are called; never return checkout success after a caught pre-order failure.",
+    "Retain the existing label if Customer::get_sources is unavailable; do not invent a vault API.",
+    "Reject malformed legacy identifier types before strpos and escape static validation exceptions."
+  ],
+  "verification": {
+    "wpcs_compat": "0 errors / 0 warnings on the unchanged full WordPress ruleset",
+    "new_unit_test": "CompatQualityTest: 9 tests / 44 assertions"
+  }
+}

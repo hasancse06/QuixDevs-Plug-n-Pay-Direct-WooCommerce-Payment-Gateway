@@ -27,4 +27,4 @@ curl --request POST <PROTECTED_STORE_BASE>/wp-json/wc/v3/plugnpay-payment
      --data-binary @<EPHEMERAL_PROTECTED_PAYLOAD>
 ```
 
-No actual raw-card payload file should be written to disk or recorded in shell history. Configure WordPress identity/capabilities separately and enforce mobile customer/order scope on the trusted backend. Do not remove the specimen guard to use this blocked candidate. Use intercepted transport only; no real request is demonstrated. Inherited HTTP 123, raw output and missing payment lock prevent reliable public use. Never automatically retry an uncertain outcome.
+No actual raw-card payload file should be written to disk or recorded in shell history. Configure WordPress identity/capabilities separately and enforce mobile customer/order scope on the trusted backend. The specimen remains non-sending. Use intercepted transport for review; no real payment is demonstrated. The route now uses authenticated order scope, individually encoded provider values, completed HTTP200 business bodies and a durable shared attempt journal. Approve the client cutover and never automatically retry an uncertain outcome.

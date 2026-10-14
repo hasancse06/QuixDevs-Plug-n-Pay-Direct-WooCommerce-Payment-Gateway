@@ -1,0 +1,211 @@
+{
+  "scope": "Non-compat includes helper, customer, cards, exception, logger and abstract gateway implementations, including historical path loaders.",
+  "before": {
+    "report": "docs/verification/quality-2026-10-15/before/wpcs.json",
+    "errors": 170,
+    "warnings": 18
+  },
+  "after": {
+    "owned_runtime_files": 12,
+    "wpcs_errors": 0,
+    "wpcs_warnings": 0,
+    "syntax_checks_passed": 12
+  },
+  "structural_fixes": [
+    "Moved implementations to class-helper.php, class-customer.php, class-customer-cards.php, class-gateway-exception.php, class-logger.php and abstracts/class-payment-gateway.php; historical files are guarded require_once compatibility loaders.",
+    "Retained public camelCase methods and named arguments as documented aliases; implementation variables use snake_case.",
+    "Completed comments/docblocks, translated literal error messages before use, added translator context, and escaped localized thrown messages."
+  ],
+  "behavior_fixes": [
+    "Card-display helpers unslash then run the existing typed Payment_Input card validation before token fields are read; invalid values cannot be persisted.",
+    "Customer email checks its type, unslashes once, and uses sanitize_email; existing local ID and hook contracts are retained.",
+    "Source and transaction lookup use the authoritative WooCommerce order store. HPOS supports native meta_query; CPT uses the documented scoped custom order-query mapping and removes the callback in finally.",
+    "Canonical fee/net zero values take precedence over stale legacy values. Updates remain staged for caller save; deletes immediately persist removal of both keys with save_meta_data.",
+    "Remote address input is unslashed, sanitized and validated as an IP before component encoding; valid IP request values are retained.",
+    "Logger elapsed time uses a UTC Unix timestamp; logger and exception still discard arbitrary payment diagnostic payloads.",
+    "Missing original-request identity headers now return false without undefined-key warnings."
+  ],
+  "validation": {
+    "phpunit_baseline": "Existing 80 tests / 593 assertions passed after owned runtime cleanup; focused HelperQualityTest subsequently passed 8 tests / 51 assertions after shared test doubles were added.",
+    "real_wc_helper_checks": "13 assertions passed in posts and 13 in HPOS on WordPress 6.9 / WooCommerce 10.9.0 / PHP 8.4.13; unchanged worker assertions; no new PHP log bytes, stderr or financial HTTP.",
+    "security_boundary_evidence": [
+      {
+        "path": "/private/tmp/qpd-integration-20261015-k9m0wcg2/wordpress/wp-content/plugins/woocommerce/includes/class-wc-form-handler.php",
+        "lines": "509-541",
+        "fact": "WooCommerce validates the add-payment-method nonce and logged-in user before calling the gateway helper."
+      },
+      {
+        "path": "/private/tmp/qpd-integration-20261015-k9m0wcg2/wordpress/wp-content/plugins/woocommerce/includes/data-stores/class-wc-order-data-store-cpt.php",
+        "line": 1055,
+        "fact": "WooCommerce applies woocommerce_order_data_store_cpt_get_orders_query after converting its supported custom query arguments to WP_Query arguments."
+      }
+    ]
+  },
+  "suppressions": [
+    {
+      "file": "includes/class-helper.php",
+      "annotation_line": 418,
+      "statement_line": 419,
+      "rules": [
+        "WordPress.DB.SlowDBQuery.slow_db_query_meta_query"
+      ],
+      "classification": "required_storage_query",
+      "reason": "Exact source lookup requires existing custom metadata; the scoped WooCommerce CPT query filter preserves the supported order data-store API.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-helper.php",
+      "annotation_line": 429,
+      "statement_line": 430,
+      "rules": [
+        "WordPress.DB.SlowDBQuery.slow_db_query_meta_query"
+      ],
+      "classification": "required_storage_query",
+      "reason": "HPOS supports meta_query natively; source references use this existing custom order metadata.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer.php",
+      "annotation_line": 109,
+      "statement_line": 109,
+      "rules": [
+        "Generic.CodeAnalysis.UnusedFunctionParameter.Found"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Reserved public API parameter retained for existing integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer.php",
+      "annotation_line": 110,
+      "statement_line": 111,
+      "rules": [
+        "WordPress.Security.NonceVerification.Missing"
+      ],
+      "classification": "delegated_validation_boundary",
+      "reason": "Delegated customer helper; WooCommerce validates its checkout entry point.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer-cards.php",
+      "annotation_line": 59,
+      "statement_line": 59,
+      "rules": [
+        "WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid",
+        "WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Historical public method and named argument retained for integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer-cards.php",
+      "annotation_line": 60,
+      "statement_line": 61,
+      "rules": [
+        "WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Historical public named argument retained for integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer-cards.php",
+      "annotation_line": 134,
+      "statement_line": 134,
+      "rules": [
+        "WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Historical public method retained for integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/class-customer-cards.php",
+      "annotation_line": 147,
+      "statement_line": 148,
+      "rules": [
+        "WordPress.Security.NonceVerification.Missing",
+        "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized"
+      ],
+      "classification": "delegated_validation_boundary",
+      "reason": "Delegated WooCommerce payment helper; the complete unslashed array is immediately validated by Payment_Input::card() before use.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 58,
+      "statement_line": 59,
+      "rules": [
+        "WordPress.Security.NonceVerification.Missing",
+        "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized"
+      ],
+      "classification": "delegated_validation_boundary",
+      "reason": "WooCommerce validates the account endpoint nonce; the unslashed card fields are immediately validated before use.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 121,
+      "statement_line": 121,
+      "rules": [
+        "Universal.NamingConventions.NoReservedKeywordParameterNames.classFound"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Public named argument retained for compatibility with existing integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 285,
+      "statement_line": 286,
+      "rules": [
+        "WordPress.Security.NonceVerification.Missing",
+        "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized"
+      ],
+      "classification": "delegated_validation_boundary",
+      "reason": "Read-only secret context rejects sensitive provider echoes after the authenticated payment flow; no request field authorizes this operation.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 402,
+      "statement_line": 403,
+      "rules": [
+        "WordPress.Security.NonceVerification.Missing",
+        "WordPress.Security.ValidatedSanitizedInput.InputNotSanitized"
+      ],
+      "classification": "delegated_validation_boundary",
+      "reason": "Selection inspection only inside WooCommerce's payment flow; checked strings are sanitized below and token ownership is validated before payment.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 454,
+      "statement_line": 454,
+      "rules": [
+        "WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid",
+        "WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Historical public method and named argument retained for integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    },
+    {
+      "file": "includes/abstracts/class-payment-gateway.php",
+      "annotation_line": 455,
+      "statement_line": 456,
+      "rules": [
+        "WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase"
+      ],
+      "classification": "public_api_compatibility",
+      "reason": "Historical public named argument retained for integrations.",
+      "scope": "Single annotated statement; no file, directory or ruleset exclusions."
+    }
+  ],
+  "limitations": [
+    "Required custom-reference metadata lookups can still have the performance characteristics of metadata queries; the schema and historical keys are preserved.",
+    "The abstract account helper creates only local card display metadata and does not invent a verified provider reference. Optional extensions remain uncertified.",
+    "No financial protocol, claim/CAS journal, advisory lock, reconciliation or core refund accounting code was modified by this scope."
+  ]
+}

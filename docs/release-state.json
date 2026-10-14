@@ -1,13 +1,100 @@
 {
-  "status": "PREPARED LOCALLY — PUBLICATION BLOCKED",
+  "status": "RELEASE CANDIDATE \u2014 REST CLIENT CUTOVER APPROVAL PENDING",
   "release_requirements": {
-    "upstream_redistribution_license_confirmed": false,
-    "payment_concurrency_and_replay_review_passed": false,
-    "refund_contract_review_passed": false,
+    "upstream_redistribution_license_confirmed": true,
+    "payment_concurrency_and_replay_review_passed": true,
+    "refund_contract_review_passed": true,
     "rest_input_output_transport_review_passed": false,
-    "wordpress_woocommerce_integration_verified": false,
-    "plugin_check_review_complete": false,
-    "installation_verified": false
+    "wordpress_woocommerce_integration_verified": true,
+    "plugin_check_review_complete": true,
+    "installation_verified": true
   },
-  "repository_status": "SOURCE CLEANUP COMPLETE — PRIVATE REVIEW HANDOFF"
+  "repository_status": "EXISTING PUBLIC REPOSITORY \u2014 LOCAL UNCOMMITTED RELEASE PREPARATION",
+  "last_review": "2026-10-15",
+  "evidence": {
+    "owned_code_license": {
+      "authorization": "Md Abu Hasan explicitly confirms ownership/authorship of applicable developer-owned code and authorizes GPL-2.0-or-later",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        "LICENSE",
+        "UPSTREAM-NOTICES.md",
+        "THIRD-PARTY-NOTICES.md"
+      ],
+      "provenance_scope": "Specific helper similarities recorded for follow-up, not an automatic third-party ownership/GPLv3 determination or generic denial of owner authorization."
+    },
+    "installation_verified": {
+      "method": "Real WP-CLI ZIP install/activation; all32 installed hashes match exact ZIP before/after tests",
+      "sha256": "5079dae17b83a5669d2a344f74105927c0c26121468d1f0584aafa58536b0d4a",
+      "bytes": 77662,
+      "runtime_files": 32
+    },
+    "platform_smoke": {
+      "wordpress": "6.9",
+      "woocommerce": "10.9.0",
+      "php": "8.4.13",
+      "additional_php": "8.2.4",
+      "mariadb": "10.4.28",
+      "posts_assertions": 149,
+      "hpos_assertions": 149,
+      "additional_php82_hpos_assertions": 39,
+      "live_processor_requests": 0,
+      "scope": "Core classic/REST/refund/saved-token/worker/reconciliation tests. Optional extensions, Blocks, real TLS web-server authentication and merchant settlement not certified."
+    },
+    "unit_tests": {
+      "phpunit": "9.6.38",
+      "php_versions": [
+        "8.2.4",
+        "8.4.13"
+      ],
+      "tests": 102,
+      "assertions": 755,
+      "packaging_python_tests": 38,
+      "syntax_files_per_php_version": 48
+    },
+    "concurrency_refunds": {
+      "verified": "Independent PHP connections, atomic INSERT/CAS races, crash/timeout replay blocks, real wc_create_refund accounting and actual CLI overlap serialization",
+      "database_assumption": "Single authoritative WordPress primary with same-connection advisory lock affinity"
+    },
+    "rest_pending": {
+      "reason": "Original embedded-key-only app requires merchant/application-developer acceptance and implementation of the authenticated cutover. Same route/eight fields are retained; HTTP200/WordPress errors/restricted output/no blind retries require client review. Old PHP status123 was not an observed wire status. No production deployment authorized.",
+      "implementation_verified": true,
+      "client_cutover_approved": false
+    },
+    "plugin_check": {
+      "version": "2.1.0",
+      "errors": 0,
+      "warnings": 2,
+      "passed": true,
+      "before": {
+        "errors": 40,
+        "warnings": 96
+      },
+      "reason": "No actionable runtime findings remain. Two unsuppressed unexpected_markdown_file warnings retain UPSTREAM-NOTICES.md and THIRD-PARTY-NOTICES.md legal/provenance content. Complete inventory records all findings."
+    },
+    "wpcs": {
+      "version": "3.4.1 / PHPCS3.13.6",
+      "errors": 0,
+      "warnings": 0,
+      "fixable": 0,
+      "before": {
+        "errors": 368,
+        "warnings": 41,
+        "fixable": 20
+      },
+      "scope": "Full runtime main/includes/languages; no excluded files or weakened rules; all23 exact statement annotations documented"
+    },
+    "workflow_validation": {
+      "actionlint": "1.7.12",
+      "passed": true,
+      "hosted_runs_executed": false,
+      "phpcs_required_in_both_workflows": true
+    },
+    "quality_inventory": {
+      "markdown": "docs/quality-inventory.md",
+      "json": "docs/quality-inventory.json",
+      "baseline_tool_occurrences": 545,
+      "final_tool_occurrences": 2,
+      "protected_implementations_token_identical": 6
+    }
+  }
 }

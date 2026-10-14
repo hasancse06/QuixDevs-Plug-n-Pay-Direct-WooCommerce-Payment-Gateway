@@ -1,45 +1,14 @@
 <?php
-namespace QuixDevs\PlugNPayDirect;
-
-use \Exception;
-
-
 /**
- * WooCommerce Plugnpay Exception Class
+ * Compatibility loader for the historical include path.
  *
- * Extends Exception to provide additional data
- *
- * @since 4.0.2
+ * @package QuixDevs_PlugNPay_Direct
  */
 
+namespace QuixDevs\PlugNPayDirect;
+
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
-class Gateway_Exception extends Exception {
-
-	/** @var string sanitized/localized error message */
-	protected $localized_message;
-
-	/**
-	 * Setup exception
-	 *
-	 * @since 4.0.2
-	 * @param string $error_message Full response
-	 * @param string $localized_message user-friendly translated error message
-	 */
-	public function __construct( $error_message = '', $localized_message = '' ) {
-		$this->localized_message = $localized_message;
-		parent::__construct( $error_message );
-	}
-
-	/**
-	 * Returns the localized message.
-	 *
-	 * @since 4.0.2
-	 * @return string
-	 */
-	public function getLocalizedMessage() {
-		return $this->localized_message;
-	}
-}
+require_once __DIR__ . '/class-gateway-exception.php';

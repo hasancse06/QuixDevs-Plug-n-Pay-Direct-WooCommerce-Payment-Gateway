@@ -27,8 +27,10 @@ for name,size in images.items():
  p=root/name
  if not p.is_file() or p.read_bytes()[:8]!=b'\x89PNG\r\n\x1a\n' or struct.unpack('>II',p.read_bytes()[16:24])!=size:errors.append('Incorrect/missing PNG: '+name)
 main=(root/'quixdevs-plugnpay-direct.php').read_text()
-for marker in ["Plugin Name: QuixDevs Plug'n Pay Direct",'Version: 1.0.0','Text Domain: quixdevs-plugnpay-direct','namespace QuixDevs\\PlugNPayDirect;',"'plugnpaydirect'"]:
+for marker in ["Plugin Name: QuixDevs Plug'n Pay Direct",'Version: 1.0.0','Text Domain: quixdevs-plugnpay-direct','namespace QuixDevs\\PlugNPayDirect;']:
  if marker not in main:errors.append('Missing runtime identity: '+marker)
+gateway=(root/'includes/class-gateway.php').read_text()
+if "$this->id" not in gateway or "'plugnpaydirect'" not in gateway:errors.append('Missing gateway identity in canonical Gateway class')
 collection=json.loads((root/'docs/postman/quixdevs-plugnpay-direct.postman_collection.json').read_text())
 assert collection['info']['schema'].endswith('/v2.1.0/collection.json')
 if not any(event['listen']=='prerequest' and any('throw new Error' in line for line in event['script']['exec']) for event in collection['event']):errors.append('Postman network guard missing')
@@ -39,7 +41,7 @@ for i,item in enumerate(collection['item']):
  if keys!=(expected-{'payment_method'} if i==1 else expected):errors.append('Unexpected Postman body fields')
 composer=json.loads((root/'composer.json').read_text())
 workflow=(root/'.github/workflows/ci.yml').read_text()
-for script in ['lint','test','phpcs','secrets','docs','package-check','repository-check']:
+for script in ['lint','test','phpcs','secrets','docs','package-check','repository-check','test-packaging']:
  expected='python3 tools/run-phpcs.py' if script=='phpcs' else 'composer '+script
  if script not in composer['scripts'] or expected not in workflow:errors.append('CI/script mismatch: '+script)
 for script in ['lint.py','run-phpcs.py','secret-scan.py','verify-docs.py','build-release.py','check-publication.py','check-repository.py']:

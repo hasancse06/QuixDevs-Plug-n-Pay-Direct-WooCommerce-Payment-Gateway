@@ -27,10 +27,12 @@ errors = ['Tracked local-only file: ' + path for path in sorted(ignored_tracked)
 other = set(git('ls-files', '--others', '--exclude-standard', '-z').decode().strip('\0').split('\0')) - {''}
 candidates = sorted(path for path in tracked | other if (root / path).is_file())
 required = {
-    '.gitignore', '.github/workflows/ci.yml', 'README.md', 'readme.txt', 'CHANGELOG.md',
-    'CONTRIBUTING.md', 'SECURITY.md', 'UPSTREAM-NOTICES.md', 'composer.json', 'composer.lock',
+    '.gitignore', '.github/workflows/ci.yml', '.github/workflows/release.yml', 'README.md', 'readme.txt', 'CHANGELOG.md',
+    'CONTRIBUTING.md', 'SECURITY.md', 'UPSTREAM-NOTICES.md', 'LICENSE', 'COPYING.GPL3', 'THIRD-PARTY-NOTICES.md', 'composer.json', 'composer.lock',
     'phpunit.xml.dist', 'phpcs.xml.dist', 'quixdevs-plugnpay-direct.php',
-    'includes/class-rest-authorization.php', 'tests/ContractTest.php', 'tools/build-release.py',
+    'includes/class-rest-authorization.php', 'tests/ContractTest.php', 'tools/build-release.py', 'tools/release_package.py', 'tools/create-draft-release.py',
+    'tests/SecurityTest.php', 'tests/ProviderResponseTest.php', 'tests/Packaging/test_release.py',
+    'docs/installation.md', 'docs/configuration.md', 'docs/release-distribution.md',
     'docs/branding/quixdevs-logo.png', 'docs/branding/github-social-preview.svg',
     'docs/branding/github-social-preview.png', 'docs/screenshots/05-api-documentation.png',
     'wordpress-org-assets/icon-128x128.png', 'wordpress-org-assets/icon-256x256.png',

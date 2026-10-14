@@ -10,8 +10,8 @@ jobs:
       matrix:
         php: ['8.2', '8.3', '8.4']
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, dom
@@ -20,6 +20,8 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
       - run: composer lint
       - run: composer test
+      - run: composer test-packaging
+      - run: php tests/direct-access.php
       - run: php tests/missing-dependency.php
       - run: php tests/missing-key.php
       - run: composer secrets
@@ -27,12 +29,11 @@ jobs:
       - run: composer repository-check
       - run: python3 tools/check-repository.py --snapshot-check
       - run: composer package-check
-      - name: Record inherited WordPress coding-standard findings
-        continue-on-error: true
+      - name: Enforce WordPress coding standards and retain the report
         run: |
           mkdir -p docs/verification
           python3 tools/run-phpcs.py > docs/verification/phpcs.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
           name: wordpress-standards-php-${{ matrix.php }}

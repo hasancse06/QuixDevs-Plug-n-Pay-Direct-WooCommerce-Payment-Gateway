@@ -1,29 +1,29 @@
-# Distribution security review
+# Payment security and PCI responsibilities
 
-No live charge, refund, merchant login, database change or credential rotation was performed. This is a source/mocked-test review, not PCI certification or complete security clearance.
+This is the existing production Plug'n Pay gateway prepared for community distribution. Production-use history is reported by its maintainer; independent verification is recorded separately in [testing](testing.md). Mocked provider responses test application behavior and cannot establish actual authorization/settlement or PCI compliance. The preserved production source is unchanged.
 
-## Targeted corrections implemented only in the GitHub copy
+## Implemented safeguards
 
-- Removed the embedded checkout verification secret before writing the target file. It is now a required server constant, with no default. Non-HTTPS/missing/empty-key checkout stops before network submission.
-- Added an actual REST permission callback and repeated it inside the handler. HTTPS, WordPress identity, constant-time shared-key comparison, positive scalar order ID and order ownership or explicit backend/order-edit capabilities are required.
-- Ordinary authenticated users/managers cannot execute other customers' or guest-order payments merely by possessing the embedded key. No capabilities are granted automatically.
-- Missing, wrong-gateway or foreign saved tokens stop before submission. An owned token with no saved transaction reference also stops; existing valid authprev request mapping remains.
-- Permission/configuration errors contain no supplied key/card values. Repository pattern scanning plus local comparison against the old secret checks all distributable text files; actual values are never printed.
+- Checkout requires HTTPS and a nonempty administrator-controlled verification key; no embedded fallback is shipped. The merchant-specific inherited hash input order is preserved for review.
+- The existing REST route requires WordPress-authenticated identity, HTTPS, constant-time existing-key comparison and order ownership or explicit backend/order-edit permissions. Missing/inaccessible orders share a generic error. No capability is granted automatically.
+- Fresh-card validation checks scalar input, PAN/Luhn/length, valid current-month-or-later expiry, 3/4-digit CVV and bounded holder text. Positive trusted KYD totals are required; client amount/currency overrides are ignored.
+- Provider field values are encoded individually; a delimiter inside an address/credential cannot add financial fields. The fixed HTTPS provider endpoint uses TLS certificate verification and disables redirects that could forward card data elsewhere.
+- Component-wise response decoding rejects malformed/duplicate fields. Payment completion requires verified provider success and a safe reference. Sending a request, a pending result or an ambiguous timeout never marks an order paid.
+- A durable database journal coordinates checkout, REST and refunds across workers, rejects replays and persists uncertain/crashed attempts without expiry. [Reconciliation](reconciliation.md) is an explicit capability-checked merchant action, not an automatic retry.
+- WooCommerce refunds use true/WP_Error semantics, validated amounts/currency/reference and one-return protection. Pending/uncertain outcomes are not recorded as success.
+- Missing/foreign/wrong-gateway saved tokens are denied. The existing `authprev` operation uses the selected token's own verified reference. Legacy unmapped tokens need fresh-card re-saving; optional renewals require an explicitly mapped order reference. This is not an independently certified provider vault.
+- Arbitrary provider/log/exception payloads and authorization-code order notes are suppressed. Restricted REST fragments omit unknown data and known secrets. Full PAN/CVV cannot be used as persisted references in reviewed paths.
 
-The existing mobile application used only an embedded key. That contract intentionally breaks in this copy and requires the [documented backend/authentication migration](api-authentication.md). Both source directories remain unchanged.
+## Direct-card data flow
 
-## Critical unresolved release conditions
+Classic Checkout sends card fields to merchant WordPress/PHP, which forwards them over HTTPS to Plug'n Pay. REST card input also traverses its trusted backend and WordPress. These servers process/transmit account data; this is not a hosted-fields/browser-to-processor design. Reviewed saved-method paths retain display metadata/reference, not full PAN/CVV. The attempt journal also contains no card data.
 
-| Finding | Evidence / consequence | Disposition |
-|---|---|---|
-| No shared payment lock/idempotency | Two authorized overlapping pending requests can submit twice; Classic and REST do not share attempts | Reproduced in mocks; production/public release blocked |
-| Refund API result mismatch | Truthy associative failure arrays; pending reported as success; repeated returns possible | Financial logic retained; separate scoped fix required |
-| REST HTTP 123 | Authorized handler asks for nonfinal informational-class status; actual server/client behavior not verified | Preserved; release blocked |
-| REST timeout failure | WP_Error transport object is later used as an array and throws | Reproduced; release blocked |
-| Card input validation | REST bypasses checkout validator; request values not encoded individually | No request/protocol redesign; release review needed |
-| Sensitive output/logging | Numeric provider fragments remain in REST replies; raw MErrMsg can enter notes; logger accepts arbitrary text | No safe-output/redaction guarantee; release blocked |
-| Saved/reference model | Tokens use fabricated identifiers and user-level latest trans_id, not provider-issued per-card vault tokens | Preserved; not advertised as verified vault tokenization |
-| Optional integrations | Pre-orders loading and absent API/method references remain | Source retained, integrations unverified |
-| Runtime verification | Real WP authentication, WooCommerce calls, HPOS and ZIP activation not exercised | Required evidence outstanding |
+Never log payment bodies, CVV, full PAN, provider credentials or WordPress Application Passwords. Protect WooCommerce credential settings, database/backups, web/PHP/proxy/APM logs, error handlers, support exports and third-party plugins. Review PHP `zend.exception_ignore_args=On` and disable public error display. Application safeguards cannot certify those systems.
 
-No CVV persistence was found in the tested card-save paths, and full PAN is not stored by those token methods. That does not establish infrastructure compliance or arbitrary-log safety. Merchant passwords remain in ordinary WC settings. The new checks do not justify publicly deploying this candidate while these defects remain. No needed payment route was removed as a substitute for correction.
+PCI DSS scope and validation must be determined with the acquirer/payment brands or qualified assessor. No PCI certification, SAQ eligibility, 3DS or hosted/tokenized API support is claimed. CVV must not be retained after authorization, even encrypted. [PCI SSC FAQ1439](https://www.pcisecuritystandards.org/faqs/1439/), [FAQ1443](https://www.pcisecuritystandards.org/faqs/1443/), [FAQ1319](https://www.pcisecuritystandards.org/faqs/1319/).
+
+## Concrete review boundaries
+
+The shared-key-only mobile client needs the [documented authenticated migration](api-authentication.md). No client deployment was performed. Merchant/hash configuration and actual processor acceptance remain external acceptance work; no live test request was sent. Blocks is not implemented; inherited optional subscription/pre-order code is not certified. Full runtime WPCS is clean and Plugin Check has only two documented legal-notice Markdown warnings. The [final release report](github-release-readiness.md) separates verified fixes, client acceptance and external test limits.
+
+[Refunds](refunds.md), [configuration](configuration.md), [security reporting](../SECURITY.md).

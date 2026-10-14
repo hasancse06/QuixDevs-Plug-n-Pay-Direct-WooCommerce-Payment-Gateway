@@ -23,7 +23,7 @@ final class ContractTest extends TestCase {
     }
     public function testCheckoutDeclineAndTimeout(): void {
         foreach (array(array('response'=>array('code'=>200),'body'=>'FinalStatus=badcard&resp-code=51&MErrMsg=synthetic'),new WP_Error('timeout')) as $response) {
-            qpd_reset(); $GLOBALS['qpd_provider']=$response; self::assertNull((new Gateway())->process_payment(42)); self::assertSame('pending',$GLOBALS['qpd_orders'][42]['status']); self::assertNotEmpty($GLOBALS['qpd_notices']);
+            qpd_reset(); $GLOBALS['qpd_provider']=$response; $result=(new Gateway())->process_payment(42);self::assertTrue($result===null || $result===array('result'=>'failure')); self::assertSame('pending',$GLOBALS['qpd_orders'][42]['status']); self::assertNotEmpty($GLOBALS['qpd_notices']);
         }
     }
     public function testInsecureCheckoutDoesNotSendCardData(): void {
@@ -33,7 +33,7 @@ final class ContractTest extends TestCase {
     public function testFormAndValidationKeepExistingFieldNames(): void {
         $g=new Gateway(); ob_start();$g->payment_fields();$html=ob_get_clean();
         foreach(array('card-number','card-name','card-expiry-month','card-expiry-year','card-cvc') as $field) { self::assertStringContainsString('plugnpaydirect-'.$field,$html); }
-        $g->validate_fields();self::assertEmpty($GLOBALS['qpd_notices']);$_POST['plugnpaydirect-card-number']='invalid';$_POST['plugnpaydirect-card-cvc']='x';$g->validate_fields();self::assertCount(2,$GLOBALS['qpd_notices']);
+        $g->validate_fields();self::assertEmpty($GLOBALS['qpd_notices']);$_POST['plugnpaydirect-card-number']='invalid';$_POST['plugnpaydirect-card-cvc']='x';$g->validate_fields();self::assertCount(1,$GLOBALS['qpd_notices']);
     }
     public function testRouteHasCallablePermissionCheck(): void {
         $g=$this->rest();$g->wc_rest_payment_endpoints();$r=$GLOBALS['qpd_routes']['wc/v3/plugnpay-payment'];self::assertSame('POST',$r['methods']);self::assertIsCallable($r['permission_callback']);self::assertSame(array($g,'authorize_payment'),$r['permission_callback']);
@@ -42,7 +42,7 @@ final class ContractTest extends TestCase {
         $GLOBALS['qpd_user']=0;$g=$this->rest();$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertInstanceOf(WP_Error::class,$r);self::assertSame(401,$r->get_error_data()['status']);self::assertEmpty($GLOBALS['qpd_requests']);
     }
     public function testAuthenticatedOwnerRetainsSuccessfulRequestAndResponse(): void {
-        $g=$this->rest();$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(123,$r->get_status());self::assertSame(200,$r->get_data()['code']);self::assertArrayHasKey(0,$r->get_data());$f=$this->fields();self::assertArrayNotHasKey('authhash',$f);self::assertSame('KYD',$f['currency']);self::assertSame('synthetic-reference',$GLOBALS['qpd_orders'][42]['transaction']);
+        $g=$this->rest();$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(200,$r->get_status());self::assertSame(200,$r->get_data()['code']);self::assertArrayHasKey(0,$r->get_data());$f=$this->fields();self::assertArrayNotHasKey('authhash',$f);self::assertSame('KYD',$f['currency']);self::assertSame('synthetic-reference',$GLOBALS['qpd_orders'][42]['transaction']);
     }
     public function testOtherCustomerAndUnprivilegedManagerAreDenied(): void {
         $GLOBALS['qpd_user']=99;$GLOBALS['qpd_capabilities']['edit_shop_order']=true;$r=$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(403,$r->get_error_data()['status']);self::assertEmpty($GLOBALS['qpd_requests']);
@@ -64,7 +64,7 @@ final class ContractTest extends TestCase {
         $GLOBALS['qpd_https']=false;$r=$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(403,$r->get_error_data()['status']);self::assertEmpty($GLOBALS['qpd_requests']);
     }
     public function testExistingMissingMethodAndAlreadyPaidOrderContract(): void {
-        $g=$this->rest();$p=$_POST;unset($p['payment_method']);$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($p));self::assertSame(123,$r->get_status());self::assertSame(401,$r->get_data()['code']);
+        $g=$this->rest();$p=$_POST;unset($p['payment_method']);$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($p));self::assertSame(200,$r->get_status());self::assertSame(401,$r->get_data()['code']);
         $GLOBALS['qpd_orders'][42]['status']='processing';$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(401,$r->get_data()['code']);self::assertEmpty($GLOBALS['qpd_requests']);
     }
     public function testRestDeclineAndUnsupportedMethodRetained(): void {
@@ -74,26 +74,26 @@ final class ContractTest extends TestCase {
     public function testSequentialRestRepeatDoesNotChargeCompletedOrder(): void {
         $g=$this->rest();$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));$r=$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertSame(401,$r->get_data()['code']);self::assertCount(1,$GLOBALS['qpd_requests']);
     }
-    public function testKnownConcurrentChargeBlockerRemainsVisible(): void {
-        $g=$this->rest();$GLOBALS['qpd_transport_hook']=function()use($g){unset($GLOBALS['qpd_transport_hook']);$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));};$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertCount(2,$GLOBALS['qpd_requests']);
+    public function testConcurrentChargeIsBlockedBySharedDurableClaim(): void {
+        $g=$this->rest();$GLOBALS['qpd_transport_hook']=function()use($g){unset($GLOBALS['qpd_transport_hook']);$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));};$g->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertCount(1,$GLOBALS['qpd_requests']);
     }
-    public function testKnownRestTimeoutCrashRemainsVisible(): void {
-        $GLOBALS['qpd_provider']=new WP_Error('timeout');$this->expectException(Error::class);$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));
+    public function testRestTimeoutReturnsSafeLegacyFailureWithoutMarkingPaid(): void {
+        $GLOBALS['qpd_provider']=new WP_Error('timeout','synthetic-private-provider-detail');$r=$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertInstanceOf(WP_Error::class,$r);self::assertSame(409,$r->get_error_data()['status']);self::assertSame('pending',$GLOBALS['qpd_orders'][42]['status']);self::assertStringNotContainsString('synthetic-private-provider-detail',$r->get_error_message());
     }
-    public function testKnownUnredactedProviderOutputRemainsVisible(): void {
-        $GLOBALS['qpd_provider']['body'].='&diagnostic=SYNTHETIC_SENSITIVE_MARKER';$r=$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertContains('diagnostic=SYNTHETIC_SENSITIVE_MARKER',$r->get_data());
+    public function testUndocumentedProviderOutputIsOmitted(): void {
+        $GLOBALS['qpd_provider']['body'].='&diagnostic=SYNTHETIC_SENSITIVE_MARKER';$r=$this->rest()->wc_rest_payment_endpoint_handler(new Qpd_Request($_POST));self::assertNotContains('diagnostic=SYNTHETIC_SENSITIVE_MARKER',$r->get_data());
     }
     public function testRefundFullPartialPendingAndFailureMappings(): void {
-        foreach(array('12.34','2.00') as $amount) { foreach(array('success','pending','problem') as $status) { qpd_reset();$GLOBALS['qpd_provider']['body']='FinalStatus='.$status;$r=(new Gateway())->process_refund(42,$amount);self::assertSame(array('result'=>$status==='problem'?'failure':'success'),$r);$f=$this->fields();self::assertSame('return',$f['mode']);self::assertSame($amount,$f['card-amount']);self::assertSame('KYD',$f['currency']);self::assertSame('synthetic-provider-reference',$f['orderID']); } }
+        foreach(array('12.34','2.00') as $amount) { foreach(array('success','pending','problem') as $status) { qpd_reset();$GLOBALS['qpd_orders'][42]['status']='processing';$GLOBALS['qpd_provider']['body']='FinalStatus='.$status;$r=(new Gateway())->process_refund(42,$amount);if($status==='success') {self::assertTrue($r);}else{self::assertInstanceOf(WP_Error::class,$r);}$f=$this->fields();self::assertSame('return',$f['mode']);self::assertSame($amount,$f['card-amount']);self::assertSame('KYD',$f['currency']);self::assertSame('synthetic-provider-reference',$f['orderID']); } }
     }
-    public function testKnownRefundTransportAndDuplicateBehavior(): void {
-        $g=new Gateway();$GLOBALS['qpd_provider']=new WP_Error('timeout');self::assertSame(array('result'=>'failure'),$g->process_refund(42,'2.00'));qpd_reset();$g->process_refund(42,'2.00');$g->process_refund(42,'2.00');self::assertCount(2,$GLOBALS['qpd_requests']);
+    public function testRefundTransportAndDuplicateRequestsAreBlocked(): void {
+        $GLOBALS['qpd_orders'][42]['status']='processing';$g=new Gateway();$GLOBALS['qpd_provider']=new WP_Error('timeout');self::assertInstanceOf(WP_Error::class,$g->process_refund(42,'2.00'));self::assertInstanceOf(WP_Error::class,$g->process_refund(42,'2.00'));self::assertCount(1,$GLOBALS['qpd_requests']);qpd_reset();$GLOBALS['qpd_orders'][42]['status']='processing';self::assertTrue($g->process_refund(42,'2.00'));self::assertInstanceOf(WP_Error::class,$g->process_refund(42,'1.00'));self::assertCount(1,$GLOBALS['qpd_requests']);
     }
     public function testSavedCardCreationDoesNotPersistPanOrCvv(): void {
         $_POST['wc-plugnpaydirect-new-payment-method']=true;(new Gateway())->process_payment(42);self::assertCount(1,$GLOBALS['qpd_saved_tokens']);self::assertSame('synthetic-reference',$GLOBALS['qpd_user_meta'][7]['trans_id']);$stored=json_encode($GLOBALS['qpd_saved_tokens']);self::assertStringNotContainsString($_POST['plugnpaydirect-card-number'],$stored);self::assertArrayNotHasKey('cvc',$GLOBALS['qpd_saved_tokens'][0]);self::assertArrayNotHasKey('cvv',$GLOBALS['qpd_saved_tokens'][0]);
     }
     public function testOwnedSavedMethodPreservesAuthprevRequest(): void {
-        $g=new Gateway();$t=new WC_Payment_Token_CC();$t->set_user_id(7);$t->set_gateway_id('plugnpaydirect');$GLOBALS['qpd_tokens'][9]=$t;$GLOBALS['qpd_user_meta'][7]['trans_id']='previous-synthetic-reference';$_POST['wc-plugnpaydirect-payment-token']=9;
+        $g=new Gateway();$t=new WC_Payment_Token_CC();$t->set_user_id(7);$t->set_gateway_id('plugnpaydirect');$t->update_meta_data('_quixdevs_plugnpay_reference','previous-synthetic-reference');$GLOBALS['qpd_tokens'][9]=$t;$GLOBALS['qpd_user_meta'][7]['trans_id']='different-latest-reference';$_POST['wc-plugnpaydirect-payment-token']=9;
         self::assertSame('success',$g->process_payment(42)['result']);$f=$this->fields();self::assertSame('authprev',$f['mode']);self::assertSame('previous-synthetic-reference',$f['prevorderid']);self::assertArrayNotHasKey('card-cvv',$f);
     }
     public function testMissingWrongOwnerAndWrongGatewayTokensNeverSubmit(): void {

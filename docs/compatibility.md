@@ -1,19 +1,22 @@
-# Compatibility and limitations
+# Compatibility and boundaries
 
-| Area | Evidence |
+| Area | Current scope |
 |---|---|
-| Original production use | Maintainer reported; versions and merchant account not supplied |
-| Distribution PHP | Intended minimum 8.2; local CLI 8.4.13; CI matrix 8.2/8.3/8.4 configured but not run on GitHub |
-| WordPress/WooCommerce | No real runtime booted/installed for this copy; stub WC_VERSION selects modern API branch only |
-| Classic Checkout | Existing fields/request/completion tested with synthetic fixtures; new HTTPS/server-key guard |
-| REST client | Existing URL/fields retained; new WordPress identity/order permission is a breaking change to embedded-key-only clients |
-| REST transport | Legacy authorized status 123/raw fragments/timeout error retained; public deployment unavailable |
-| HPOS | Main path uses modern CRUD; helper/optional classes use raw postmeta; not declared or verified compatible |
-| Checkout Blocks | No implementation; unsupported claim must not be made |
-| Saved methods | Existing authprev/source model retained; ownership/gateway/reference guard added; no verified provider-vault claim |
-| Subscriptions/pre-orders | Source retained, incomplete references/loading issues; not verified integrations |
-| Currency | Main payments/refunds still send KYD; no silent conversion or configurable multicurrency added |
-| Icons/assets | Unlicensed upstream network PNGs omitted; existing file-existence checks skip missing optional icons |
-| Runtime dependencies | No Composer/autoloader requirement on customer servers; development tooling stays outside ZIP |
+| Existing product | Maintainer-reported production use is acknowledged; it is separate from independently executed checks on the current source |
+| WordPress / PHP requirements | Metadata minimum WordPress 6.2 and PHP 8.2; WooCommerce is required. Executed versions/results are recorded in [testing](testing.md) |
+| Verified local combination | WordPress 6.9 / WooCommerce 10.9.0 / PHP 8.4.13, isolated with synthetic processor responses; configured CI versions are not claimed as executed hosted runs |
+| Classic Checkout | Existing form/request/completion architecture, with typed validation, server-key/HTTPS guards, shared attempts and verified approval |
+| REST clients | Same route/eight inputs and normal integer business codes; WordPress identity/order authorization, completed HTTP 200 and restricted output require documented client cutover |
+| HPOS | Core posts/HPOS order, concurrent-worker and accounting checks are documented; optional direct-postmeta helpers prevent a blanket compatibility declaration |
+| Checkout Blocks | No Blocks payment-method implementation; unsupported |
+| Saved cards | New tokens bind their own verified references; unmapped legacy tokens require card re-entry/re-save; no invented provider-vault API |
+| Subscriptions / pre-orders | Code retained, guarded renewal submission explicitly uses KYD; full optional-plugin lifecycles and legacy renewal-reference behavior are not certified |
+| Currency | Trusted positive KYD amounts; no silent conversion or general multicurrency support |
+| Refunds | Confirmed `true` or WP_Error, full/partial amount mapping and one Return per original transaction; pending/timeout require reconciliation |
+| Database topology | Shared journal/advisory locks assume one authoritative primary database and connection affinity; no active-active multi-primary guarantee |
+| Assets/dependencies | Runtime excludes development packages/promotional art; unverified network graphics remain omitted |
+| Custom PHP integrations | QuixDevs namespaces/hooks differ from historical names; stored gateway/settings identifiers remain |
 
-No Tested up to WordPress/WooCommerce value is invented. The old upstream declarations are historical, not a current validation result. Real authentication, plugin installation, refund consumers, HPOS and optional-plugin interactions require isolated tests before public claims. Absence of sandbox credentials is not treated as an automatic failure of unchanged production-reported behavior; material changes require proportional regression evidence.
+Official [HPOS guidance](https://developer.woocommerce.com/docs/features/orders/high-performance-order-storage/recipe-book/) explains why direct postmeta paths can bypass the active datastore. Core coverage does not certify every optional integration. No broad historical migration is introduced to change a label.
+
+Platform tests exercise real WooCommerce data stores and mocked processor outcomes. They cannot establish merchant account configuration, actual settlement, PCI certification, external mobile-backend behavior or a browser/TLS matrix. [Compatibility testing guidance](https://developer.woocommerce.com/docs/extensions/best-practices-extensions/compatibility), [security/PCI responsibilities](security.md), [final release evidence](github-release-readiness.md).

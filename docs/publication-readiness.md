@@ -1,11 +1,15 @@
-# Publication readiness
+# Publication and deployment status
 
-| Destination | Status |
+| Item | Status / evidence |
 |---|---|
-| Local/private GitHub distribution preparation | Source/upload hygiene prepared following ProductClock; legal/security conditions remain explicit |
-| Public GitHub source/release | **BLOCKED** |
-| WordPress.org submission | **BLOCKED** |
+| Existing GitHub repository | Already public; current QuixDevs history/version recorded in [version history](version-history.md) |
+| Owned-code license | GPL-2.0-or-later authorized by Md Abu Hasan; full text/metadata included; narrow conditional provenance follow-up retained |
+| Runtime installer | Canonical ZIP/checksum prepared; exact frozen bytes and installation results in [release report](github-release-readiness.md) |
+| Local quality/security checks | Results and remaining findings in [testing](testing.md); implemented fixes include worker serialization, refund correctness, drift handling and sensitive-data protection |
+| Stable GitHub release | Awaiting final recorded approvals and an explicitly authorized release action; no automatic publication |
+| Production cutover | Requires merchant configuration/reconciliation procedures and client migration acceptance; live settlement is not inferred from local mocks |
+| WordPress.org submission | Separate review of metadata, quality findings and applicable submission requirements; not automatically submitted |
 
-Documentation, original graphics, mocked tests, CI configuration and allowlisted package tooling are prepared. Neither source plugin was modified. The embedded credential is absent from the destination; REST permission and saved-token guards are scoped and tested.
+Both preserved source folders remain unchanged. Real core WordPress/WooCommerce posts/HPOS and independent-worker tests complement mocked processor outcomes; the maintainer's production-use history is acknowledged separately. The plugin is not classified as development-only merely because external payments are mocked during automated tests.
 
-Redistribution rights are unconfirmed. Shared locking/replay, refund result semantics, strict REST input/output/transport/logging behavior and real integration remain unresolved. No hosted CI, WordPress runtime, Plugin Check or install result is invented. This cleanup reused the existing Git checkout and did not create a ZIP, push or submission. Remote visibility/state was not queried or changed. [Upload handoff](github-upload.md). [A–O evidence report](github-release-readiness.md), [release conditions](release-checklist.md).
+Do not reopen repaired defects as generic blockers: the shared durable journal, WooCommerce refund result handling, completed REST HTTP 200, per-value encoding, component parsing and safe diagnostics are implemented. Remaining acceptance items are concrete: client/backend migration, merchant/provider configuration and live acceptance when separately authorized, optional-extension scope, two documented legal-notice Markdown warnings, database topology and the narrow provenance follow-up. Machine gates must match actual evidence/approval. [Release state](release-state.json), [release checklist](release-checklist.md), [distribution process](release-distribution.md).

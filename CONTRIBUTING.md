@@ -1,11 +1,13 @@
 # Contributing
 
-Keep this repository private until rights and critical payment release conditions are resolved. Use the existing checkout for review; publication requires the recorded legal and technical conditions, not just passing mocked tests.
+The repository is already public. Use the existing checkout, preserve the owner-authorized license/notices, and review the documented technical/client cutover conditions before a stable release or deployment.
 
 ```sh
 composer install
 composer lint
 composer test
+composer test-packaging
+php tests/direct-access.php
 php tests/missing-dependency.php
 php tests/missing-key.php
 composer secrets
@@ -20,4 +22,4 @@ composer release-check
 
 Keep financial request/mode/currency/reference changes separate from formatting and security changes. Preserve required REST support and document any caller-contract change. Add focused regression tests for security corrections; do not turn a demonstrated vulnerability into a claimed security pass. Run real WP/WC integration only on a disposable site/database with all processor calls intercepted. Never modify the two sibling source directories, copy private snapshots, include unlicensed assets or commit real customer/card data.
 
-Pull requests should describe the user-facing change, protocol/client impact, actual validation and remaining risks. Public review is not authorized until upstream redistribution rights are established.
+Pull requests should describe the user-facing change, protocol/client impact, actual validation and remaining risks. Do not infer actual merchant settlement or full optional-extension support from mocked tests. The owned-code GPL grant and any separately identified third-party obligations must remain distinct.

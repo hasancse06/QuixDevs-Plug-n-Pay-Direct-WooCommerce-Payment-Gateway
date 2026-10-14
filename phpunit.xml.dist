@@ -1,4 +1,4 @@
 <?xml version="1.0"?>
 <phpunit bootstrap="tests/bootstrap.php" colors="true" failOnWarning="true">
-  <testsuites><testsuite name="Distribution contracts and targeted safeguards"><file>tests/ContractTest.php</file></testsuite></testsuites>
+  <testsuites><testsuite name="Distribution contracts and targeted safeguards"><file>tests/ContractTest.php</file><file>tests/ProviderResponseTest.php</file><file>tests/SecurityTest.php</file><file>tests/PaymentAttemptsTest.php</file><file>tests/CompatQualityTest.php</file><file>tests/HelperQualityTest.php</file><file>tests/GatewayQualityTest.php</file></testsuite></testsuites>
 </phpunit>

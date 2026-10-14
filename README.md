@@ -9,24 +9,25 @@ A free, open-source Plug'n Pay payment gateway integration for WordPress and Woo
 
 ![QuixDevs Plug'n Pay Direct](docs/branding/github-social-preview.png)
 
-## Download & Installation
+## 📥 Download & Installation
 
-**[Download Latest Stable Version](https://github.com/hasancse06/QuixDevs-Plug-n-Pay-Direct-WooCommerce-Payment-Gateway/releases/latest/download/quixdevs-plugnpay-direct.zip)**
+### Download Latest Stable Release
 
-[View all releases and release notes](https://github.com/hasancse06/QuixDevs-Plug-n-Pay-Direct-WooCommerce-Payment-Gateway/releases).
+**[⬇️ Download QuixDevs Plug'n Pay Direct v1.0.0](https://github.com/hasancse06/QuixDevs-Plug-n-Pay-Direct-WooCommerce-Payment-Gateway/releases/download/v1.0.0/quixdevs-plugnpay-direct.zip)**
 
-Download **`quixdevs-plugnpay-direct.zip`** from the release's **Assets** list. This is the WordPress installation ZIP. GitHub's automatically generated **Source code (zip)** and **Source code (tar.gz)** archives contain the development repository and are not the installation package. The latest download link becomes available when a stable release is manually published with that exact asset attached. Use the checksum supplied with the release asset, when available.
+[View All Releases](https://github.com/hasancse06/QuixDevs-Plug-n-Pay-Direct-WooCommerce-Payment-Gateway/releases)
 
-1. Download the plugin ZIP.
-2. Open WordPress Admin.
-3. Navigate to **Plugins > Add New > Upload Plugin**.
-4. Select **`quixdevs-plugnpay-direct.zip`**.
-5. Click **Install Now**.
-6. Activate the plugin.
-7. Open **WooCommerce > Settings > Payments**.
-8. Configure **QuixDevs Plug'n Pay Direct**.
+### Installation
+
+1. Download the plugin ZIP using the link above.
+2. Navigate to **WordPress → Plugins → Add New → Upload Plugin**.
+3. Upload `quixdevs-plugnpay-direct.zip`.
+4. Click **Install Now**, then activate the plugin.
+5. Navigate to **WooCommerce → Settings → Payments**.
+6. Configure your Plug'n Pay merchant account.
 
 Activate only one gateway copy at a time. Existing installations using the historical plugin basename should follow the [installation and replacement guide](docs/installation.md) and [version history](docs/version-history.md).
+
 
 ## Features
 

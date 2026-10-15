@@ -116,3 +116,12 @@ Developed by **Md Abu Hasan**.
 
 - Portfolio: [hasan.online](https://hasan.online/)
 - GitHub: [hasancse06](https://github.com/hasancse06)
+
+## ⭐ Support This Project
+
+If you find this useful:
+- ⭐ Star the repository on GitHub
+- 🔗 Share it with fellow Ionic, WordPress, WooCommerce, or mobile app developers
+- 💡 Contribute with feedback or pull requests
+
+> Together, we make WordPress more mobile-friendly and developer-first 🚀
